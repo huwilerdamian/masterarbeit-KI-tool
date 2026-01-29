@@ -30,7 +30,11 @@ if (!$task) {
 </head>
 <body>
   <h1><?= htmlspecialchars($task['title']) ?></h1>
-  <p>Chat kommt hier hin.</p>
+  <form method="post" action="chat.php?id=<?= (int)$taskId ?>">
+    <label for="message">Nachricht</label><br>
+    <textarea id="message" name="message" rows="4" cols="50" placeholder="Deine Nachricht..."></textarea><br>
+    <button type="submit">Senden</button>
+  </form>
   <p><a href="tasks.php">Zurück</a></p>
 </body>
 </html>
