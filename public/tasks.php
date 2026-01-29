@@ -30,7 +30,16 @@ $tasks = tasks($userId);
       <?php foreach ($tasks as $task): ?>
         <tr>
           <td><?= htmlspecialchars($task['title']) ?></td>
-          <td><?= $task['state'] ?></td>
+          <td>
+            <button
+              type="button"
+              class="set-state"
+              data-task-id="<?= (int)$task['id'] ?>"
+              data-state="<?= htmlspecialchars($task['state']) ?>"
+            >
+              <?= htmlspecialchars($task['state']) ?>
+            </button>
+          </td>
           <td>
             <button type="button" class="set-corrected" data-task-id="<?= (int)$task['id'] ?>" data-corrected="<?= $task['corrected'] ? '1' : '0' ?>">
               <?= $task['corrected'] ? 'Ja' : 'Nein' ?>
@@ -70,6 +79,33 @@ $tasks = tasks($userId);
 
         $btn.data('corrected', data.corrected ? 1 : 0);
         $btn.text(data.corrected ? 'Ja' : 'Nein');
+      });
+
+      $(document).on('click', '.set-state', async function () {
+        const $btn = $(this);
+        const taskId = $btn.data('task-id');
+        const current = $btn.data('state');
+        const next = current === 'open' ? 'in_progress' : current === 'in_progress' ? 'done': 'open';
+
+        const res = await fetch('update_state.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ task_id: taskId, state: next }),
+        });
+
+        if (!res.ok) {
+          alert('Fehler beim Speichern.');
+          return;
+        }
+
+        const data = await res.json();
+        if (!data.ok) {
+          alert(data.error || 'Fehler beim Speichern.');
+          return;
+        }
+
+        $btn.data('state', data.state);
+        $btn.text(data.state);
       });
     });
   </script>

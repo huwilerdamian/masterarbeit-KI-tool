@@ -84,3 +84,20 @@ function update_task_corrected(int $taskId, int $userId, bool $corrected): void
         ]
     );
 }
+
+/**
+ * Setzt den state eines Tasks für einen User.
+ */
+function update_task_state(int $taskId, int $userId, string $state): void
+{
+    db_execute(
+        'UPDATE task_progress
+         SET state = :state
+         WHERE task_id = :task_id AND user_id = :user_id',
+        [
+            'state' => $state,
+            'task_id' => $taskId,
+            'user_id' => $userId,
+        ]
+    );
+}
