@@ -4,7 +4,6 @@ require __DIR__ . '/../src/tasks.php';
 
 $userId = 1;
 $tasks = tasks($userId);
-echo "<pre>".print_r($tasks, true)."</pre>";
 ?>
 <!doctype html>
 <html lang="de">
