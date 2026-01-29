@@ -24,6 +24,8 @@ if (!$task) {
     exit;
 }
 
+$messages = chat_messages_for_task($userId, $taskId);
+
 $reply = '';
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -51,6 +53,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
   <h1><?= htmlspecialchars($task['title']) ?></h1>
+  <?php if (!empty($messages)): ?>
+    <div>
+      <h2>Chat-Verlauf</h2>
+      <?php foreach ($messages as $msg): ?>
+        <p>
+          <strong><?= htmlspecialchars($msg['role']) ?>:</strong>
+          <?= nl2br(htmlspecialchars($msg['content'])) ?>
+        </p>
+      <?php endforeach; ?>
+    </div>
+  <?php endif; ?>
+
   <?php if ($error): ?>
     <p style="color: red;"><?= htmlspecialchars($error) ?></p>
   <?php endif; ?>

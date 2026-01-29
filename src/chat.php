@@ -23,3 +23,20 @@ function save_chat_message(int $userId, int $taskId, string $role, string $conte
         ]
     );
 }
+
+/**
+ * Lädt alle Chat-Nachrichten für einen User und Task.
+ */
+function chat_messages_for_task(int $userId, int $taskId): array
+{
+    return db_query(
+        'SELECT role, content
+         FROM chat_messages
+         WHERE user_id = :user_id AND task_id = :task_id
+         ORDER BY id ASC',
+        [
+            'user_id' => $userId,
+            'task_id' => $taskId,
+        ]
+    );
+}
