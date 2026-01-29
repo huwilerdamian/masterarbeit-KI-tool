@@ -16,7 +16,7 @@
 function tasks(int $userId): array
 {
     return db_query(
-        'SELECT tp.task_id, tp.state, t.id, t.title, t.prompt_notes, t.position
+        'SELECT t.id, t.title, t.prompt_notes, t.position, tp.task_id, tp.state, tp.corrected
          FROM task_progress tp
          INNER JOIN tasks t ON t.id = tp.task_id
          WHERE tp.user_id = :uid

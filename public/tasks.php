@@ -30,8 +30,8 @@ $tasks = tasks($userId);
       <?php foreach ($tasks as $task): ?>
         <tr>
           <td><?= htmlspecialchars($task['title']) ?></td>
-          <td>Ja</td>
-          <td>Ja</td>
+          <td><?= $task['state'] ?></td>
+          <td><?= $task['corrected'] ? 'Ja' : 'Nein' ?></td>
           <td><a href="/chat.php?id=<?= (int)$task['id'] ?>">Link zum Chat</a></td>
         </tr>
       <?php endforeach; ?>
