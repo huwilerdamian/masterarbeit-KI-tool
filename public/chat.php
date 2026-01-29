@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/../init.php';
 require __DIR__ . '/../src/tasks.php';
+require __DIR__ . '/../src/ai_service.php';
 
 session_start();
 
@@ -21,6 +22,21 @@ if (!$task) {
     header('Location: tasks.php');
     exit;
 }
+
+$reply = '';
+$error = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $message = trim($_POST['message'] ?? '');
+    if ($message !== '') {
+        try {
+            $reply = ai_chat_reply($message);
+        } catch (Throwable $e) {
+            $error = $e->getMessage();
+        }
+    } else {
+        $error = 'Bitte eine Nachricht eingeben.';
+    }
+}
 ?>
 <!doctype html>
 <html lang="de">
@@ -30,6 +46,17 @@ if (!$task) {
 </head>
 <body>
   <h1><?= htmlspecialchars($task['title']) ?></h1>
+  <?php if ($error): ?>
+    <p style="color: red;"><?= htmlspecialchars($error) ?></p>
+  <?php endif; ?>
+
+  <?php if ($reply): ?>
+    <div>
+      <strong>Antwort:</strong>
+      <pre><?= htmlspecialchars($reply) ?></pre>
+    </div>
+  <?php endif; ?>
+
   <form method="post" action="chat.php?id=<?= (int)$taskId ?>">
     <label for="message">Nachricht</label><br>
     <textarea id="message" name="message" rows="4" cols="50" placeholder="Deine Nachricht..."></textarea><br>
