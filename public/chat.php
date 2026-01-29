@@ -2,6 +2,7 @@
 require __DIR__ . '/../init.php';
 require __DIR__ . '/../src/tasks.php';
 require __DIR__ . '/../src/ai_service.php';
+require __DIR__ . '/../src/chat.php';
 
 session_start();
 
@@ -29,7 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $message = trim($_POST['message'] ?? '');
     if ($message !== '') {
         try {
+            save_chat_message($userId, $taskId, 'user', $message);
             $reply = ai_chat_reply($message);
+            if ($reply !== '') {
+                save_chat_message($userId, $taskId, 'assistant', $reply);
+            }
         } catch (Throwable $e) {
             $error = $e->getMessage();
         }
