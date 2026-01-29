@@ -2,7 +2,14 @@
 require __DIR__ . '/../init.php';
 require __DIR__ . '/../src/tasks.php';
 
-$userId = 1;
+session_start();
+
+$userId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+if ($userId < 1) {
+    header('Location: login.php');
+    exit;
+}
+
 $tasks = tasks($userId);
 ?>
 <!doctype html>

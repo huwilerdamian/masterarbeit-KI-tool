@@ -1,8 +1,56 @@
 <?php
 require __DIR__ . '/../init.php';
 require __DIR__ . '/../src/tasks.php';
+require __DIR__ . '/../src/auth.php';
 
-ensure_task_progress_for_user(1);
+session_start();
 
-header('Location: tasks.php');
-exit;
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username'] ?? '');
+    $password = (string)($_POST['password'] ?? '');
+
+    if ($username === '' || $password === '') {
+        $error = 'Bitte Username und Passwort eingeben.';
+    } else {
+        $userId = authenticate_user($username, $password);
+        if ($userId === null) {
+            $error = 'Ungültige Zugangsdaten.';
+        } else {
+            $_SESSION['user_id'] = $userId;
+
+            ensure_task_progress_for_user($userId);
+
+            header('Location: tasks.php');
+            exit;
+        }
+    }
+}
+?>
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Login</title>
+</head>
+<body>
+  <h1>Login</h1>
+
+  <?php if ($error): ?>
+    <p style="color: red;"><?= htmlspecialchars($error) ?></p>
+  <?php endif; ?>
+
+  <form method="post" action="login.php">
+    <div>
+      <label for="username">Username</label>
+      <input id="username" name="username" type="text" required>
+    </div>
+    <div>
+      <label for="password">Passwort</label>
+      <input id="password" name="password" type="password" required>
+    </div>
+    <button type="submit">Anmelden</button>
+  </form>
+</body>
+</html>

@@ -1,7 +1,12 @@
 <?php
-
 require __DIR__ . '/../init.php';
 
-$pdo = db(); // baut die Verbindung beim ersten Aufruf auf
+session_start();
 
-echo "DB verbunden";
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+
+header('Location: tasks.php');
+exit;
