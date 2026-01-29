@@ -45,7 +45,7 @@ $tasks = tasks($userId);
               <?= $task['corrected'] ? 'Ja' : 'Nein' ?>
             </button>
           </td>
-          <td><a href="/chat.php?id=<?= (int)$task['id'] ?>">Link zum Chat</a></td>
+          <td><a href="chat.php?id=<?= (int)$task['id'] ?>">Link zum Chat</a></td>
         </tr>
       <?php endforeach; ?>
     </table>
