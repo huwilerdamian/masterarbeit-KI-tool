@@ -10,7 +10,7 @@
  * um die Logik klar zu kapseln und wiederverwendbar zu halten.
  */
 
-function ai_chat_reply(string $message): string
+function ai_chat_reply(string $message, array $history = []): string
 {
     global $config;
 
@@ -21,9 +21,16 @@ function ai_chat_reply(string $message): string
 
     $model = $config['ai']['model'] ?? 'gpt-4.1-mini';
 
+    $input = $message;
+    if (!empty($history)) {
+        $messages = normalize_history_messages($history);
+        $messages[] = ['role' => 'user', 'content' => $message];
+        $input = $messages;
+    }
+
     $payload = json_encode([
         'model' => $model,
-        'input' => $message,
+        'input' => $input,
     ]);
 
     $ch = curl_init('https://api.openai.com/v1/responses');
@@ -82,4 +89,28 @@ function extract_openai_text(array $data): string
     }
 
     return '';
+}
+
+/**
+ * Normalisiert ein History-Array zu einem Messages-Format.
+ * Erwartet Einträge mit Schlüsseln 'role' und 'content'.
+ */
+function normalize_history_messages(array $history): array
+{
+    $messages = [];
+    foreach ($history as $item) {
+        if (!is_array($item)) {
+            continue;
+        }
+        $role = $item['role'] ?? '';
+        $content = $item['content'] ?? '';
+        if (!is_string($role) || !is_string($content)) {
+            continue;
+        }
+        if ($role === '' || $content === '') {
+            continue;
+        }
+        $messages[] = ['role' => $role, 'content' => $content];
+    }
+    return $messages;
 }

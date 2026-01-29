@@ -41,7 +41,8 @@ if (!$task) {
 
 try {
     save_chat_message($userId, $taskId, 'user', $message);
-    $reply = ai_chat_reply($message);
+    $history = chat_messages_for_task($userId, $taskId);
+    $reply = ai_chat_reply($message, $history);
     if ($reply !== '') {
         save_chat_message($userId, $taskId, 'assistant', $reply);
     }
