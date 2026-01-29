@@ -2,7 +2,9 @@
 require __DIR__ . '/../init.php';
 require __DIR__ . '/../src/tasks.php';
 
-$tasks = tasks();
+$userId = 1;
+$tasks = tasks($userId);
+echo "<pre>".print_r($tasks, true)."</pre>";
 ?>
 <!doctype html>
 <html lang="de">

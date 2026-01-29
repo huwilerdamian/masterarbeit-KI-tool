@@ -10,13 +10,54 @@
  * sondern liefert nur Daten für die Verwendung in public/*.
  */
 
-function tasks(): array
+/**
+ * Lädt alle Tasks eines Users über task_progress inkl. Progress-Daten.
+ */
+function tasks(int $userId): array
 {
     return db_query(
-        'SELECT id, title, prompt_notes, position FROM tasks ORDER BY position ASC'
+        'SELECT tp.task_id, tp.state, t.id, t.title, t.prompt_notes, t.position
+         FROM task_progress tp
+         INNER JOIN tasks t ON t.id = tp.task_id
+         WHERE tp.user_id = :uid
+         ORDER BY t.position ASC',
+        ['uid' => $userId]
     );
 }
 
+/**
+ * Legt für einen User fehlende task_progress-Einträge an,
+ * damit jeder Task einen Fortschrittseintrag hat.
+ */
+function ensure_task_progress_for_user(int $userId): void
+{
+    db_execute(
+        'INSERT INTO task_progress (task_id, user_id)
+         SELECT t.id, :uid_insert
+         FROM tasks t
+         LEFT JOIN task_progress tp
+           ON tp.task_id = t.id AND tp.user_id = :uid_join
+         WHERE tp.task_id IS NULL',
+        ['uid_insert' => $userId, 'uid_join' => $userId]
+    );
+}
+
+/**
+ * Lädt den aktuellen Stand eines Users für einen bestimmten Task.
+ */
+function task_progress_by_task_id_and_user_id(int $taskId, int $userId): array
+{
+    $rows = db_query(
+        'SELECT * FROM task_progress WHERE task_id = :task_id AND user_id = :user_id',
+        ['task_id' => $taskId, 'user_id' => $userId]
+    );
+
+    return $rows;
+}
+
+/**
+ * Lädt einen einzelnen Task anhand der ID.
+ */
 function task_by_id(int $taskId): ?array
 {
     $rows = db_query(
