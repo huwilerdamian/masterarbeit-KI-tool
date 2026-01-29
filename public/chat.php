@@ -1,7 +1,6 @@
 <?php
 require __DIR__ . '/../init.php';
 require __DIR__ . '/../src/tasks.php';
-require __DIR__ . '/../src/ai_service.php';
 require __DIR__ . '/../src/chat.php';
 
 session_start();
@@ -25,25 +24,6 @@ if (!$task) {
 }
 
 $messages = chat_messages_for_task($userId, $taskId);
-
-$reply = '';
-$error = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $message = trim($_POST['message'] ?? '');
-    if ($message !== '') {
-        try {
-            save_chat_message($userId, $taskId, 'user', $message);
-            $reply = ai_chat_reply($message);
-            if ($reply !== '') {
-                save_chat_message($userId, $taskId, 'assistant', $reply);
-            }
-        } catch (Throwable $e) {
-            $error = $e->getMessage();
-        }
-    } else {
-        $error = 'Bitte eine Nachricht eingeben.';
-    }
-}
 ?>
 <!doctype html>
 <html lang="de">
@@ -53,9 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
   <h1><?= htmlspecialchars($task['title']) ?></h1>
-  <?php if (!empty($messages)): ?>
-    <div>
-      <h2>Chat-Verlauf</h2>
+  <div>
+    <h2>Chat-Verlauf</h2>
+    <div id="chat-list">
       <?php foreach ($messages as $msg): ?>
         <p>
           <strong><?= htmlspecialchars($msg['role']) ?>:</strong>
@@ -63,24 +43,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </p>
       <?php endforeach; ?>
     </div>
-  <?php endif; ?>
+  </div>
 
-  <?php if ($error): ?>
-    <p style="color: red;"><?= htmlspecialchars($error) ?></p>
-  <?php endif; ?>
-
-  <?php if ($reply): ?>
-    <div>
-      <strong>Antwort:</strong>
-      <pre><?= htmlspecialchars($reply) ?></pre>
-    </div>
-  <?php endif; ?>
-
-  <form method="post" action="chat.php?id=<?= (int)$taskId ?>">
+  <form id="chat-form">
     <label for="message">Nachricht</label><br>
     <textarea id="message" name="message" rows="4" cols="50" placeholder="Deine Nachricht..."></textarea><br>
     <button type="submit">Senden</button>
   </form>
   <p><a href="tasks.php">Zurück</a></p>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script>
+    $(function () {
+      const $list = $('#chat-list');
+      const $form = $('#chat-form');
+      const $message = $('#message');
+      const taskId = <?= (int)$taskId ?>;
+
+      $form.on('submit', async function (e) {
+        e.preventDefault();
+        const text = $message.val().trim();
+        if (!text) {
+          alert('Bitte eine Nachricht eingeben.');
+          return;
+        }
+
+        $list.append(`<p><strong>user:</strong> ${$('<div>').text(text).html()}</p>`);
+        $message.val('');
+
+        const res = await fetch('chat_message.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ task_id: taskId, message: text }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          alert(data.error || 'Fehler beim Senden.');
+          return;
+        }
+
+        if (data.reply) {
+          $list.append(`<p><strong>assistant:</strong> ${$('<div>').text(data.reply).html()}</p>`);
+        }
+      });
+    });
+  </script>
 </body>
 </html>
