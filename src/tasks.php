@@ -67,3 +67,20 @@ function task_by_id(int $taskId): ?array
 
     return $rows[0] ?? null;
 }
+
+/**
+ * Setzt den corrected-Status eines Tasks für einen User.
+ */
+function update_task_corrected(int $taskId, int $userId, bool $corrected): void
+{
+    db_execute(
+        'UPDATE task_progress
+         SET corrected = :corrected
+         WHERE task_id = :task_id AND user_id = :user_id',
+        [
+            'corrected' => $corrected ? 1 : 0,
+            'task_id' => $taskId,
+            'user_id' => $userId,
+        ]
+    );
+}

@@ -31,11 +31,47 @@ $tasks = tasks($userId);
         <tr>
           <td><?= htmlspecialchars($task['title']) ?></td>
           <td><?= $task['state'] ?></td>
-          <td><?= $task['corrected'] ? 'Ja' : 'Nein' ?></td>
+          <td>
+            <button type="button" class="set-corrected" data-task-id="<?= (int)$task['id'] ?>" data-corrected="<?= $task['corrected'] ? '1' : '0' ?>">
+              <?= $task['corrected'] ? 'Ja' : 'Nein' ?>
+            </button>
+          </td>
           <td><a href="/chat.php?id=<?= (int)$task['id'] ?>">Link zum Chat</a></td>
         </tr>
       <?php endforeach; ?>
     </table>
   <?php endif; ?>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script>
+    $(function () {
+      $(document).on('click', '.set-corrected', async function () {
+        const $btn = $(this);
+        const taskId = $btn.data('task-id');
+        const current = $btn.data('corrected') === 1;
+        const next = !current;
+
+        const res = await fetch('update_corrected.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ task_id: taskId, corrected: next }),
+        });
+
+        if (!res.ok) {
+          alert('Fehler beim Speichern.');
+          return;
+        }
+
+        const data = await res.json();
+        if (!data.ok) {
+          alert(data.error || 'Fehler beim Speichern.');
+          return;
+        }
+
+        $btn.data('corrected', data.corrected ? 1 : 0);
+        $btn.text(data.corrected ? 'Ja' : 'Nein');
+      });
+    });
+  </script>
 </body>
 </html>
