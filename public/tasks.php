@@ -39,14 +39,14 @@ $tasks = tasks($userId);
           <div class="row">
             <div class="col-md-9"><?= htmlspecialchars($task['title']) ?></div>
             <div class="col-md-1">
-              <button type="button" class="set-state" data-task-id="<?= (int)$task['id'] ?>" data-state="<?= $task['state'] ? '1' : '0' ?>">
-                <?= $task['state'] ? 'Ja' : 'Nein' ?>
-              </button>
+              <span type="button"  class="set-corrected <?= $task['corrected'] ? 'true' : 'false' ?>" data-task-id="<?= (int)$task['id'] ?>" data-corrected="<?= $task['corrected'] ? '1' : '0' ?>">
+                <?php include 'assets/images/icons/check.svg' ?>
+              </span>
             </div>
             <div class="col-md-1">
-              <button type="button" class="set-corrected" data-task-id="<?= (int)$task['id'] ?>" data-corrected="<?= $task['corrected'] ? '1' : '0' ?>">
-                <?= $task['corrected'] ? 'Ja' : 'Nein' ?>
-              </button>
+              <span type="button" class="set-state <?= $task['state'] ? 'true' : 'false' ?>" data-task-id="<?= (int)$task['id'] ?>" data-state="<?= $task['state'] ? '1' : '0' ?>">
+                <?php include 'assets/images/icons/check.svg' ?>
+              </span>
             </div>
             <div class="col-md-1"><a href="chat.php?id=<?= (int)$task['id'] ?>"><?php include 'assets/images/icons/robot.svg' ?></a></div>
           </div>

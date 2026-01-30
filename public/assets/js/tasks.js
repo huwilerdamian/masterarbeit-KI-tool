@@ -23,7 +23,8 @@ $(function () {
     }
 
     $btn.data('corrected', data.corrected ? 1 : 0);
-    $btn.text(data.corrected ? 'Ja' : 'Nein');
+    $btn.toggleClass('true', !!data.corrected);
+    $btn.toggleClass('false', !data.corrected);
   });
 
   $(document).on('click', '.set-state', async function () {
@@ -50,6 +51,7 @@ $(function () {
     }
 
     $btn.data('state', data.state);
-    $btn.text(data.state === 1 ? 'Ja' : 'Nein');
+    $btn.toggleClass('true', data.state === 1);
+    $btn.toggleClass('false', data.state !== 1);
   });
 });

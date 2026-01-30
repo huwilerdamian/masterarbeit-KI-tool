@@ -16,6 +16,19 @@ body {
   height: 40px;
 }
 
+.set-corrected.false,
+.set-state.false {
+    stroke-dasharray: 20;
+    stroke-dashoffset: 20;
+    transition: stroke-dashoffset 0.3s ease-in-out;
+}
+.set-corrected.true,
+.set-state.true {
+    stroke-dasharray: 20;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.3s ease-in-out;
+}
+
 .btn-primary {
   background-color: var(--bs-primary);
   border-color: var(--bs-primary);
