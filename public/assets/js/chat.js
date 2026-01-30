@@ -6,12 +6,21 @@ $(function () {
   const $attachInput = $('#attach-input');
   const $fileSelected = $('#file-selected');
   const $filePreview = $('#file-preview');
+  const $sendBtn = $('.chat-send-btn');
   const taskId = window.__TASK_ID__;
   const scrollToBottom = () => {
     $list.scrollTop($list.prop('scrollHeight'));
   };
 
   scrollToBottom();
+
+  const updateSendState = () => {
+    const hasText = $message.val().trim().length > 0;
+    const hasFile = $attachInput[0] && $attachInput[0].files[0];
+    $sendBtn.prop('disabled', !hasText && !hasFile);
+  };
+
+  updateSendState();
 
   $attachBtn.on('click', function () {
     $attachInput.trigger('click');
@@ -31,6 +40,7 @@ $(function () {
       $fileSelected.text('');
       $filePreview.empty();
     }
+    updateSendState();
   });
 
   $form.on('submit', async function (e) {
@@ -38,7 +48,6 @@ $(function () {
     const text = $message.val().trim();
     const file = $attachInput[0] && $attachInput[0].files[0] ? $attachInput[0].files[0] : null;
     if (!text && !file) {
-      alert('Bitte eine Nachricht eingeben.');
       return;
     }
 
@@ -98,6 +107,7 @@ $(function () {
     }
     $fileSelected.text('');
     $filePreview.empty();
+    updateSendState();
   });
 
   $message.on('keydown', function (e) {
@@ -105,5 +115,9 @@ $(function () {
       e.preventDefault();
       $form.trigger('submit');
     }
+  });
+
+  $message.on('input', function () {
+    updateSendState();
   });
 });

@@ -185,6 +185,11 @@ a {
   justify-content: center;
 }
 
+.chat-send-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .chat-icon {
   width: 18px;
   height: 18px;

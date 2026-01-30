@@ -35,7 +35,7 @@ if ($isJson) {
 } else {
     $taskId = isset($_POST['task_id']) ? (int)$_POST['task_id'] : 0;
     $message = trim((string)($_POST['message'] ?? ''));
-    if (isset($_FILES['file']) && is_array($_FILES['file'])) {
+    if (isset($_FILES['file']) && is_array($_FILES['file']) && ($_FILES['file']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
         $uploadedFile = $_FILES['file'];
     }
 }
