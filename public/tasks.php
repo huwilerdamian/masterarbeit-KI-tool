@@ -10,7 +10,7 @@ if ($userId < 1) {
     exit;
 }
 
-$tasks = tasks($userId);
+$tasksByGroup = tasks_by_group($userId);
 ?>
 <!doctype html>
 <html lang="de">
@@ -25,33 +25,35 @@ $tasks = tasks($userId);
   <div class="container bg-white rounded p-4 shadow">
     <h1 class="border-bottom mb-5 mt-4">Matheplan «7a Gleichungen und Ungleichungen»</h1>
 
-    <?php if (empty($tasks)): ?>
+    <?php if (empty($tasksByGroup)): ?>
       <p>Keine Tasks gefunden.</p>
     <?php else: ?>
-      <div class="container border tasks">
-        <div class="row">
-            <div class="d-flex align-items-center col-md-9 border-end">Teil A</div>
-            <div class="d-flex align-items-center col-md-1 border-end justify-content-center">gelöst</div>
-            <div class="d-flex align-items-center col-md-1 border-end justify-content-center">korrigiert</div>
-            <div class="d-flex align-items-center col-md-1 justify-content-center">Hilfe?</div>
-        </div>
-        <?php foreach ($tasks as $task): ?>
+      <?php foreach ($tasksByGroup as $group => $groupTasks): ?>
+        <div class="container border tasks mb-4">
           <div class="row">
-            <div class="d-flex align-items-center col-md-9 border-end border-top p-2"><?= htmlspecialchars($task['title']) ?></div>
-            <div class="d-flex align-items-center justify-content-center col-md-1 border-end border-top">
-              <span type="button"  class="set-corrected <?= $task['corrected'] ? 'true' : 'false' ?>" data-task-id="<?= (int)$task['id'] ?>" data-corrected="<?= $task['corrected'] ? '1' : '0' ?>">
-                <?php include 'assets/images/icons/check.svg' ?>
-              </span>
-            </div>
-            <div class="d-flex align-items-center justify-content-center col-md-1 border-end border-top">
-              <span type="button" class="set-state <?= $task['state'] ? 'true' : 'false' ?>" data-task-id="<?= (int)$task['id'] ?>" data-state="<?= $task['state'] ? '1' : '0' ?>">
-                <?php include 'assets/images/icons/check.svg' ?>
-              </span>
-            </div>
-            <div class="d-flex align-items-center justify-content-center col-md-1 border-top"><a href="chat.php?id=<?= (int)$task['id'] ?>"><?php include 'assets/images/icons/robot.svg' ?></a></div>
+              <div class="d-flex align-items-center col-md-9 border-end">Teil <?= htmlspecialchars($group) ?></div>
+              <div class="d-flex align-items-center col-md-1 border-end justify-content-center">gelöst</div>
+              <div class="d-flex align-items-center col-md-1 border-end justify-content-center">korrigiert</div>
+              <div class="d-flex align-items-center col-md-1 justify-content-center">Hilfe?</div>
           </div>
-        <?php endforeach; ?>
+          <?php foreach ($groupTasks as $task): ?>
+            <div class="row">
+              <div class="d-flex align-items-center col-md-9 border-end border-top p-2"><?= htmlspecialchars($task['title']) ?></div>
+              <div class="d-flex align-items-center justify-content-center col-md-1 border-end border-top">
+                <span type="button"  class="set-corrected <?= $task['corrected'] ? 'true' : 'false' ?>" data-task-id="<?= (int)$task['id'] ?>" data-corrected="<?= $task['corrected'] ? '1' : '0' ?>">
+                  <?php include 'assets/images/icons/check.svg' ?>
+                </span>
+              </div>
+              <div class="d-flex align-items-center justify-content-center col-md-1 border-end border-top">
+                <span type="button" class="set-state <?= $task['state'] ? 'true' : 'false' ?>" data-task-id="<?= (int)$task['id'] ?>" data-state="<?= $task['state'] ? '1' : '0' ?>">
+                  <?php include 'assets/images/icons/check.svg' ?>
+                </span>
+              </div>
+              <div class="d-flex align-items-center justify-content-center col-md-1 border-top"><a href="chat.php?id=<?= (int)$task['id'] ?>"><?php include 'assets/images/icons/robot.svg' ?></a></div>
+            </div>
+          <?php endforeach; ?>
         </div>
+      <?php endforeach; ?>
     <?php endif; ?>
   </div>
   <script src="assets/libs/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>

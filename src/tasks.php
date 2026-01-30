@@ -16,13 +16,29 @@
 function tasks(int $userId): array
 {
     return db_query(
-        'SELECT t.id, t.title, t.prompt_notes, t.position, tp.task_id, tp.state, tp.corrected
+        'SELECT t.id, t.title, t.prompt_notes, t.position, t.`task_group`, tp.task_id, tp.state, tp.corrected
          FROM task_progress tp
          INNER JOIN tasks t ON t.id = tp.task_id
          WHERE tp.user_id = :uid
-         ORDER BY t.position ASC',
+         ORDER BY t.`task_group` ASC, t.position ASC',
         ['uid' => $userId]
     );
+}
+
+/**
+ * Lädt alle Tasks eines Users gruppiert nach t.task_group.
+ */
+function tasks_by_group(int $userId): array
+{
+    $rows = tasks($userId);
+    $grouped = [];
+
+    foreach ($rows as $task) {
+        $group = $task['task_group'] ?? 'A';
+        $grouped[$group][] = $task;
+    }
+
+    return $grouped;
 }
 
 /**
