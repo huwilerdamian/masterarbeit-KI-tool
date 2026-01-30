@@ -11,6 +11,11 @@ body {
   min-height: 100vh;
 }
 
+.icon {
+  width: 40px;
+  height: 40px;
+}
+
 .btn-primary {
   background-color: var(--bs-primary);
   border-color: var(--bs-primary);

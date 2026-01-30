@@ -22,26 +22,23 @@ $tasks = tasks($userId);
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body class="page-tasks">
-  <div class="container bg-white">
-    <h1>Alle Tasks</h1>
+  <div class="container bg-white mt-5 rounded p-4 shadow">
+    <h1>Matheplan «7a Gleichungen und Ungleichungen»</h1>
 
     <?php if (empty($tasks)): ?>
       <p>Keine Tasks gefunden.</p>
     <?php else: ?>
-      <table>
-        <thead>
-          <tr>
-            <th>Titel</th>
-            <th>gelöst</th>
-            <th>korrigiert</th>
-            <th>Hilfe?</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="container">
+        <div class="row">
+            <div class="col-md-9">Titel</div>
+            <div class="col-md-1">gelöst</div>
+            <div class="col-md-1">korrigiert</div>
+            <div class="col-md-1">Hilfe?</div>
+        </div>
         <?php foreach ($tasks as $task): ?>
-          <tr>
-            <td><?= htmlspecialchars($task['title']) ?></td>
-            <td>
+          <div class="row">
+            <div class="col-md-9"><?= htmlspecialchars($task['title']) ?></div>
+            <div class="col-md-1">
               <button
                 type="button"
                 class="set-state"
@@ -50,16 +47,16 @@ $tasks = tasks($userId);
               >
                 <?= htmlspecialchars($task['state']) ?>
               </button>
-            </td>
-            <td>
+            </div>
+            <div class="col-md-1">
               <button type="button" class="set-corrected" data-task-id="<?= (int)$task['id'] ?>" data-corrected="<?= $task['corrected'] ? '1' : '0' ?>">
                 <?= $task['corrected'] ? 'Ja' : 'Nein' ?>
               </button>
-            </td>
-            <td><a href="chat.php?id=<?= (int)$task['id'] ?>">Link zum Chat</a></td>
-          </tr>
+            </div>
+            <div class="col-md-1"><a href="chat.php?id=<?= (int)$task['id'] ?>"><?php include 'assets/images/icons/robot.svg' ?></a></div>
+          </div>
         <?php endforeach; ?>
-      </table>
+        </div>
     <?php endif; ?>
   </div>
   <script src="assets/libs/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
