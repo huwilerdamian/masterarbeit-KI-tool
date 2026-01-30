@@ -21,8 +21,8 @@ $tasks = tasks($userId);
   <link rel="stylesheet" href="assets/css/app.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
-<body class="page-tasks">
-  <div class="container bg-white mt-5 rounded p-4 shadow">
+<body class="page-tasks p-4">
+  <div class="container bg-white rounded p-4 shadow">
     <h1>Matheplan «7a Gleichungen und Ungleichungen»</h1>
 
     <?php if (empty($tasks)): ?>
