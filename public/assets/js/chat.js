@@ -29,6 +29,14 @@ $(function () {
   $attachInput.on('change', function () {
     const file = $attachInput[0] && $attachInput[0].files[0] ? $attachInput[0].files[0] : null;
     if (file) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        $fileSelected.text('Nur JPG, PNG, GIF oder WebP erlaubt.');
+        $filePreview.empty();
+        $attachInput.val('');
+        updateSendState();
+        return;
+      }
       $fileSelected.text(`Ausgewählt: ${file.name}`);
       if (file.type && file.type.startsWith('image/')) {
         const url = URL.createObjectURL(file);

@@ -75,7 +75,7 @@ $messages = chat_messages_for_task($userId, $taskId);
         <button id="attach-btn" class="chat-icon-btn" type="button" aria-label="Datei hinzufügen">
           <?php include 'assets/images/icons/plus.svg' ?>
         </button>
-        <input id="attach-input" type="file" name="file" accept="image/*" capture hidden>
+        <input id="attach-input" type="file" name="file" accept="image/jpeg,image/png,image/gif,image/webp" capture hidden>
         <textarea id="message" name="message" class="chat-textarea" rows="1" placeholder="Stelle irgendeine Frage"></textarea>
         <button class="chat-send-btn" type="submit" aria-label="Senden">
           <?php include 'assets/images/icons/arrow_right.svg' ?>
