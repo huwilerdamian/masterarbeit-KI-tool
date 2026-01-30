@@ -23,32 +23,32 @@ $tasks = tasks($userId);
 </head>
 <body class="page-tasks p-4">
   <div class="container bg-white rounded p-4 shadow">
-    <h1>Matheplan «7a Gleichungen und Ungleichungen»</h1>
+    <h1 class="border-bottom mb-5 mt-4">Matheplan «7a Gleichungen und Ungleichungen»</h1>
 
     <?php if (empty($tasks)): ?>
       <p>Keine Tasks gefunden.</p>
     <?php else: ?>
-      <div class="container">
+      <div class="container border tasks">
         <div class="row">
-            <div class="col-md-9">Titel</div>
-            <div class="col-md-1">gelöst</div>
-            <div class="col-md-1">korrigiert</div>
-            <div class="col-md-1">Hilfe?</div>
+            <div class="d-flex align-items-center col-md-9 border-end">Teil A</div>
+            <div class="d-flex align-items-center col-md-1 border-end justify-content-center">gelöst</div>
+            <div class="d-flex align-items-center col-md-1 border-end justify-content-center">korrigiert</div>
+            <div class="d-flex align-items-center col-md-1 justify-content-center">Hilfe?</div>
         </div>
         <?php foreach ($tasks as $task): ?>
           <div class="row">
-            <div class="col-md-9"><?= htmlspecialchars($task['title']) ?></div>
-            <div class="col-md-1">
+            <div class="d-flex align-items-center col-md-9 border-end border-top p-2"><?= htmlspecialchars($task['title']) ?></div>
+            <div class="d-flex align-items-center justify-content-center col-md-1 border-end border-top">
               <span type="button"  class="set-corrected <?= $task['corrected'] ? 'true' : 'false' ?>" data-task-id="<?= (int)$task['id'] ?>" data-corrected="<?= $task['corrected'] ? '1' : '0' ?>">
                 <?php include 'assets/images/icons/check.svg' ?>
               </span>
             </div>
-            <div class="col-md-1">
+            <div class="d-flex align-items-center justify-content-center col-md-1 border-end border-top">
               <span type="button" class="set-state <?= $task['state'] ? 'true' : 'false' ?>" data-task-id="<?= (int)$task['id'] ?>" data-state="<?= $task['state'] ? '1' : '0' ?>">
                 <?php include 'assets/images/icons/check.svg' ?>
               </span>
             </div>
-            <div class="col-md-1"><a href="chat.php?id=<?= (int)$task['id'] ?>"><?php include 'assets/images/icons/robot.svg' ?></a></div>
+            <div class="d-flex align-items-center justify-content-center col-md-1 border-top"><a href="chat.php?id=<?= (int)$task['id'] ?>"><?php include 'assets/images/icons/robot.svg' ?></a></div>
           </div>
         <?php endforeach; ?>
         </div>

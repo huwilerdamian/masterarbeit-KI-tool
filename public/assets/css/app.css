@@ -17,10 +17,11 @@ a {
 
 .icon-robot path:nth-child(1) {
     opacity: 0.6;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.3s ease-in-out, fill 0.3s ease-in-out;
 }
 .icon-robot:hover path:nth-child(1) {
     opacity: 1;
+    fill: #83E036
 }
 
 .set-corrected.false .icon-check,
@@ -36,3 +37,6 @@ a {
     transition: stroke-dashoffset 0.3s ease-in-out;
 }
 
+.tasks.container .row {
+  min-height: 60px;
+}
