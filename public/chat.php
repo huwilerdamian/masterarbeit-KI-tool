@@ -32,6 +32,7 @@ $messages = chat_messages_for_task($userId, $taskId);
   <title>Task</title>
   <link rel="stylesheet" href="assets/libs/bootstrap-5.3.8-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/app.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body class="page-chat">
   <h1><?= htmlspecialchars($task['title']) ?></h1>
@@ -54,43 +55,10 @@ $messages = chat_messages_for_task($userId, $taskId);
   </form>
   <p><a href="tasks.php">Zurück</a></p>
 
-  <script src="assets/libs/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script>
-    $(function () {
-      const $list = $('#chat-list');
-      const $form = $('#chat-form');
-      const $message = $('#message');
-      const taskId = <?= (int)$taskId ?>;
-
-      $form.on('submit', async function (e) {
-        e.preventDefault();
-        const text = $message.val().trim();
-        if (!text) {
-          alert('Bitte eine Nachricht eingeben.');
-          return;
-        }
-
-        $list.append(`<p><strong>user:</strong> ${$('<div>').text(text).html()}</p>`);
-        $message.val('');
-
-        const res = await fetch('chat_message.php', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ task_id: taskId, message: text }),
-        });
-
-        const data = await res.json();
-        if (!res.ok || !data.ok) {
-          alert(data.error || 'Fehler beim Senden.');
-          return;
-        }
-
-        if (data.reply) {
-          $list.append(`<p><strong>assistant:</strong> ${$('<div>').text(data.reply).html()}</p>`);
-        }
-      });
-    });
+    window.__TASK_ID__ = <?= (int)$taskId ?>;
   </script>
+  <script src="assets/libs/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/chat.js"></script>
 </body>
 </html>

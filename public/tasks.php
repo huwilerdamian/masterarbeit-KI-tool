@@ -19,6 +19,7 @@ $tasks = tasks($userId);
   <title>Tasks</title>
   <link rel="stylesheet" href="assets/libs/bootstrap-5.3.8-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/app.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body class="page-tasks">
   <h1>Alle Tasks</h1>
@@ -61,63 +62,6 @@ $tasks = tasks($userId);
   <?php endif; ?>
 
   <script src="assets/libs/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script>
-    $(function () {
-      $(document).on('click', '.set-corrected', async function () {
-        const $btn = $(this);
-        const taskId = $btn.data('task-id');
-        const current = $btn.data('corrected') === 1;
-        const next = !current;
-
-        const res = await fetch('update_corrected.php', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ task_id: taskId, corrected: next }),
-        });
-
-        if (!res.ok) {
-          alert('Fehler beim Speichern.');
-          return;
-        }
-
-        const data = await res.json();
-        if (!data.ok) {
-          alert(data.error || 'Fehler beim Speichern.');
-          return;
-        }
-
-        $btn.data('corrected', data.corrected ? 1 : 0);
-        $btn.text(data.corrected ? 'Ja' : 'Nein');
-      });
-
-      $(document).on('click', '.set-state', async function () {
-        const $btn = $(this);
-        const taskId = $btn.data('task-id');
-        const current = $btn.data('state');
-        const next = current === 'open' ? 'in_progress' : current === 'in_progress' ? 'done': 'open';
-
-        const res = await fetch('update_state.php', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ task_id: taskId, state: next }),
-        });
-
-        if (!res.ok) {
-          alert('Fehler beim Speichern.');
-          return;
-        }
-
-        const data = await res.json();
-        if (!data.ok) {
-          alert(data.error || 'Fehler beim Speichern.');
-          return;
-        }
-
-        $btn.data('state', data.state);
-        $btn.text(data.state);
-      });
-    });
-  </script>
+  <script src="assets/js/tasks.js"></script>
 </body>
 </html>
