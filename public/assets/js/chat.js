@@ -4,6 +4,8 @@ $(function () {
   const $message = $('#message');
   const $attachBtn = $('#attach-btn');
   const $attachInput = $('#attach-input');
+  const $fileSelected = $('#file-selected');
+  const $filePreview = $('#file-preview');
   const taskId = window.__TASK_ID__;
   const scrollToBottom = () => {
     $list.scrollTop($list.prop('scrollHeight'));
@@ -13,6 +15,22 @@ $(function () {
 
   $attachBtn.on('click', function () {
     $attachInput.trigger('click');
+  });
+
+  $attachInput.on('change', function () {
+    const file = $attachInput[0] && $attachInput[0].files[0] ? $attachInput[0].files[0] : null;
+    if (file) {
+      $fileSelected.text(`Ausgewählt: ${file.name}`);
+      if (file.type && file.type.startsWith('image/')) {
+        const url = URL.createObjectURL(file);
+        $filePreview.html(`<img class="chat-preview-image" src="${url}" alt="Vorschau">`);
+      } else {
+        $filePreview.html(`<div class="chat-preview-file">Datei: ${$('<div>').text(file.name).html()}</div>`);
+      }
+    } else {
+      $fileSelected.text('');
+      $filePreview.empty();
+    }
   });
 
   $form.on('submit', async function (e) {
@@ -67,6 +85,8 @@ $(function () {
     if ($attachInput[0]) {
       $attachInput.val('');
     }
+    $fileSelected.text('');
+    $filePreview.empty();
   });
 
   $message.on('keydown', function (e) {

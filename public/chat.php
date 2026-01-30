@@ -52,6 +52,8 @@ $messages = chat_messages_for_task($userId, $taskId);
       </div>
     </div>
 
+    <div id="file-selected" class="chat-file-selected small text-muted mt-2" aria-live="polite"></div>
+    <div id="file-preview" class="chat-file-preview mt-2" aria-live="polite"></div>
     <form id="chat-form" class="mb-3">
       <div class="chat-input">
         <button id="attach-btn" class="chat-icon-btn" type="button" aria-label="Datei hinzufügen">
