@@ -39,13 +39,8 @@ $tasks = tasks($userId);
           <div class="row">
             <div class="col-md-9"><?= htmlspecialchars($task['title']) ?></div>
             <div class="col-md-1">
-              <button
-                type="button"
-                class="set-state"
-                data-task-id="<?= (int)$task['id'] ?>"
-                data-state="<?= htmlspecialchars($task['state']) ?>"
-              >
-                <?= htmlspecialchars($task['state']) ?>
+              <button type="button" class="set-state" data-task-id="<?= (int)$task['id'] ?>" data-state="<?= $task['state'] ? '1' : '0' ?>">
+                <?= $task['state'] ? 'Ja' : 'Nein' ?>
               </button>
             </div>
             <div class="col-md-1">

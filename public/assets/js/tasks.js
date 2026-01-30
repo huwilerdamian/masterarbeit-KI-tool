@@ -29,8 +29,8 @@ $(function () {
   $(document).on('click', '.set-state', async function () {
     const $btn = $(this);
     const taskId = $btn.data('task-id');
-    const current = $btn.data('state');
-    const next = current === 'open' ? 'in_progress' : current === 'in_progress' ? 'done' : 'open';
+    const current = Number($btn.data('state')) === 1;
+    const next = current ? 0 : 1;
 
     const res = await fetch('update_state.php', {
       method: 'POST',
@@ -50,6 +50,6 @@ $(function () {
     }
 
     $btn.data('state', data.state);
-    $btn.text(data.state);
+    $btn.text(data.state === 1 ? 'Ja' : 'Nein');
   });
 });

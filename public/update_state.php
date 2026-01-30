@@ -14,7 +14,7 @@ if (!is_array($data)) {
 }
 
 $taskId = isset($data['task_id']) ? (int)$data['task_id'] : 0;
-$state = isset($data['state']) ? (string)$data['state'] : '';
+$state = isset($data['state']) ? (int)$data['state'] : -1;
 
 if ($taskId < 1) {
     http_response_code(400);
@@ -22,7 +22,7 @@ if ($taskId < 1) {
     exit;
 }
 
-$allowed = ['open', 'in_progress', 'done'];
+$allowed = [0, 1];
 if (!in_array($state, $allowed, true)) {
     http_response_code(400);
     echo json_encode(['ok' => false, 'error' => 'Invalid state']);
@@ -30,6 +30,6 @@ if (!in_array($state, $allowed, true)) {
 }
 
 $userId = 1;
-update_task_state($taskId, $userId, $state);
+update_task_state($taskId, $userId, $state === 1);
 
 echo json_encode(['ok' => true, 'state' => $state]);
