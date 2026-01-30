@@ -34,7 +34,7 @@ $(function () {
         const url = URL.createObjectURL(file);
         $filePreview.html(`<img class="chat-preview-image" src="${url}" alt="Vorschau">`);
       } else {
-        $filePreview.html(`<div class="chat-preview-file">Datei: ${$('<div>').text(file.name).html()}</div>`);
+        $filePreview.empty();
       }
     } else {
       $fileSelected.text('');
@@ -59,9 +59,7 @@ $(function () {
     const contentHtml = text ? `<div class="chat-content">${messageHtml}</div>` : '';
     const attachmentHtml = previewUrl
       ? `<div class="chat-attachment mt-2"><a href="${fileUrl}" target="_blank" rel="noopener"><img class="chat-attachment-image" src="${previewUrl}" alt="Anhang"></a></div>`
-      : (file
-        ? `<div class="chat-attachment mt-2"><a class="chat-attachment-file" href="${fileUrl}" target="_blank" rel="noopener" download><svg class="icon icon-file" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9.5a2 2 0 0 0-.6-1.4l-4.5-4.5A2 2 0 0 0 12.5 3H7Zm6 1.5V8a1 1 0 0 0 1 1h3.5L13 4.5Z"/></svg><span class="chat-attachment-name">${fileNameHtml}</span></a></div>`
-        : '');
+      : '';
     $list.append(
       `<div class="chat-message d-flex justify-content-end">` +
         `<div class="chat-bubble chat-user">` +

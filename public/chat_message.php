@@ -69,15 +69,6 @@ try {
             'image/png',
             'image/gif',
             'image/webp',
-            'application/pdf',
-            'text/plain',
-            'text/csv',
-            'application/msword',
-            'application/vnd.ms-excel',
-            'application/vnd.ms-powerpoint',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         ];
 
         $maxSize = 20 * 1024 * 1024;
@@ -91,7 +82,7 @@ try {
         $mime = $finfo->file($uploadedFile['tmp_name']) ?: '';
         if (!in_array($mime, $allowedMime, true)) {
             http_response_code(400);
-            echo json_encode(['ok' => false, 'error' => 'Dateityp nicht erlaubt.']);
+            echo json_encode(['ok' => false, 'error' => 'Nur Bilder sind erlaubt.']);
             exit;
         }
 

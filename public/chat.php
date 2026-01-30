@@ -61,13 +61,6 @@ $messages = chat_messages_for_task($userId, $taskId);
                     <img class="chat-attachment-image" src="<?= htmlspecialchars($filePath) ?>" alt="<?= htmlspecialchars($fileName ?: 'Anhang') ?>">
                   </a>
                 </div>
-              <?php elseif ($filePath !== ''): ?>
-                <div class="chat-attachment mt-2">
-                  <a class="chat-attachment-file" href="<?= htmlspecialchars($filePath) ?>" target="_blank" rel="noopener">
-                    <?php include 'assets/images/icons/file.svg' ?>
-                    <span class="chat-attachment-name"><?= htmlspecialchars($fileName ?: basename($filePath)) ?></span>
-                  </a>
-                </div>
               <?php endif; ?>
             </div>
           </div>
@@ -82,7 +75,7 @@ $messages = chat_messages_for_task($userId, $taskId);
         <button id="attach-btn" class="chat-icon-btn" type="button" aria-label="Datei hinzufügen">
           <?php include 'assets/images/icons/plus.svg' ?>
         </button>
-        <input id="attach-input" type="file" name="file" accept="image/*,application/pdf,text/plain,text/csv,application/msword,application/vnd.ms-excel,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation" capture hidden>
+        <input id="attach-input" type="file" name="file" accept="image/*" capture hidden>
         <textarea id="message" name="message" class="chat-textarea" rows="1" placeholder="Stelle irgendeine Frage"></textarea>
         <button class="chat-send-btn" type="submit" aria-label="Senden">
           <?php include 'assets/images/icons/arrow_right.svg' ?>
