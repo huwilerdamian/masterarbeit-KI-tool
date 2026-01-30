@@ -34,26 +34,36 @@ $messages = chat_messages_for_task($userId, $taskId);
   <link rel="stylesheet" href="assets/css/app.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
-<body class="page-chat">
-  <h1><?= htmlspecialchars($task['title']) ?></h1>
-  <div>
-    <h2>Chat-Verlauf</h2>
-    <div id="chat-list">
-      <?php foreach ($messages as $msg): ?>
-        <p>
-          <strong><?= htmlspecialchars($msg['role']) ?>:</strong>
-          <?= nl2br(htmlspecialchars($msg['content'])) ?>
-        </p>
-      <?php endforeach; ?>
-    </div>
-  </div>
+<body class="page-chat p-4">
+  <div class="container bg-white rounded p-4 shadow">
+    <h1 class="border-bottom mt-4">Hilfe bei <?= htmlspecialchars($task['title']) ?></h1>
+    <p class="text-end"><a href="tasks.php">Zurück</a></p>
 
-  <form id="chat-form">
-    <label for="message">Nachricht</label><br>
-    <textarea id="message" name="message" rows="4" cols="50" placeholder="Deine Nachricht..."></textarea><br>
-    <button type="submit">Senden</button>
-  </form>
-  <p><a href="tasks.php">Zurück</a></p>
+    <div class="mb-4">
+      <div id="chat-list" class="chat-list d-flex flex-column gap-3">
+        <?php foreach ($messages as $msg): ?>
+          <?php $isUser = ($msg['role'] ?? '') === 'user'; ?>
+          <div class="chat-message d-flex <?= $isUser ? 'justify-content-end' : 'justify-content-start' ?>">
+            <div class="chat-bubble <?= $isUser ? 'chat-user' : 'chat-assistant' ?>">
+              <div class="chat-content"><?= nl2br(htmlspecialchars($msg['content'])) ?></div>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    </div>
+
+    <form id="chat-form" class="mb-3">
+      <div class="chat-input">
+        <button class="chat-icon-btn" type="button" aria-label="Mehr">
+          <?php include 'assets/images/icons/plus.svg' ?>
+        </button>
+        <textarea id="message" name="message" class="chat-textarea" rows="1" placeholder="Stelle irgendeine Frage"></textarea>
+        <button class="chat-send-btn" type="submit" aria-label="Senden">
+          <?php include 'assets/images/icons/arrow_right.svg' ?>
+        </button>
+      </div>
+    </form>
+  </div>
 
   <script>
     window.__TASK_ID__ = <?= (int)$taskId ?>;

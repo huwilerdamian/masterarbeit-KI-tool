@@ -3,6 +3,11 @@ $(function () {
   const $form = $('#chat-form');
   const $message = $('#message');
   const taskId = window.__TASK_ID__;
+  const scrollToBottom = () => {
+    $list.scrollTop($list.prop('scrollHeight'));
+  };
+
+  scrollToBottom();
 
   $form.on('submit', async function (e) {
     e.preventDefault();
@@ -12,7 +17,14 @@ $(function () {
       return;
     }
 
-    $list.append(`<p><strong>user:</strong> ${$('<div>').text(text).html()}</p>`);
+    $list.append(
+      `<div class="chat-message d-flex justify-content-end">` +
+        `<div class="chat-bubble chat-user">` +
+          `<div class="chat-content">${$('<div>').text(text).html()}</div>` +
+        `</div>` +
+      `</div>`
+    );
+    scrollToBottom();
     $message.val('');
 
     const res = await fetch('chat_message.php', {
@@ -28,7 +40,14 @@ $(function () {
     }
 
     if (data.reply) {
-      $list.append(`<p><strong>assistant:</strong> ${$('<div>').text(data.reply).html()}</p>`);
+      $list.append(
+        `<div class="chat-message d-flex justify-content-start">` +
+          `<div class="chat-bubble chat-assistant">` +
+            `<div class="chat-content">${$('<div>').text(data.reply).html()}</div>` +
+          `</div>` +
+        `</div>`
+      );
+      scrollToBottom();
     }
   });
 });
