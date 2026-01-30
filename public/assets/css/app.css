@@ -1,0 +1,20 @@
+/* Custom overrides for Bootstrap */
+:root {
+  --bs-primary: #1d4ed8;
+  --bs-primary-rgb: 29, 78, 216;
+}
+
+.btn-primary {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #1e40af;
+  border-color: #1e40af;
+}
+
+.page-login .btn-primary {
+  border-radius: 999px;
+}

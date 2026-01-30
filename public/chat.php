@@ -30,8 +30,10 @@ $messages = chat_messages_for_task($userId, $taskId);
 <head>
   <meta charset="utf-8">
   <title>Task</title>
+  <link rel="stylesheet" href="assets/libs/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/app.css">
 </head>
-<body>
+<body class="page-chat">
   <h1><?= htmlspecialchars($task['title']) ?></h1>
   <div>
     <h2>Chat-Verlauf</h2>
@@ -52,6 +54,7 @@ $messages = chat_messages_for_task($userId, $taskId);
   </form>
   <p><a href="tasks.php">Zurück</a></p>
 
+  <script src="assets/libs/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script>
     $(function () {

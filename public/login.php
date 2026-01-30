@@ -33,8 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="utf-8">
   <title>Login</title>
+  <link rel="stylesheet" href="assets/libs/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/app.css">
 </head>
-<body>
+<body class="page-login">
   <h1>Login</h1>
 
   <?php if ($error): ?>
@@ -52,5 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     <button type="submit">Anmelden</button>
   </form>
+  <script src="assets/libs/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
