@@ -102,6 +102,38 @@ a {
   font-size: 0.85rem;
 }
 
+.chat-attachment-image {
+  max-width: 240px;
+  max-height: 180px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  object-fit: cover;
+}
+
+.chat-attachment-name {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.chat-attachment-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  text-decoration: none;
+  color: inherit;
+}
+
+.chat-attachment-file .icon-file {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
 .chat-input {
   display: flex;
   align-items: center;

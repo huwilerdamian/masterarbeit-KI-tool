@@ -121,10 +121,6 @@ try {
 
         $filePath = 'uploads/chat/' . $today . '/' . $fileName;
         $fileName = $originalName;
-
-        if ($message === '') {
-            $message = 'Datei: ' . $originalName;
-        }
     }
 
     save_chat_message($userId, $taskId, 'user', $message, $filePath, $fileName);

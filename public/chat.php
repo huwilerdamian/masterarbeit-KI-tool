@@ -43,9 +43,32 @@ $messages = chat_messages_for_task($userId, $taskId);
       <div id="chat-list" class="chat-list d-flex flex-column gap-3">
         <?php foreach ($messages as $msg): ?>
           <?php $isUser = ($msg['role'] ?? '') === 'user'; ?>
+          <?php
+            $filePath = $msg['file_path'] ?? '';
+            $fileName = $msg['file_name'] ?? '';
+            $isImage = false;
+            if ($filePath !== '') {
+                $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'], true);
+            }
+          ?>
           <div class="chat-message d-flex <?= $isUser ? 'justify-content-end' : 'justify-content-start' ?>">
             <div class="chat-bubble <?= $isUser ? 'chat-user' : 'chat-assistant' ?>">
               <div class="chat-content"><?= nl2br(htmlspecialchars($msg['content'])) ?></div>
+              <?php if ($filePath !== '' && $isImage): ?>
+                <div class="chat-attachment mt-2">
+                  <a href="<?= htmlspecialchars($filePath) ?>" target="_blank" rel="noopener">
+                    <img class="chat-attachment-image" src="<?= htmlspecialchars($filePath) ?>" alt="<?= htmlspecialchars($fileName ?: 'Anhang') ?>">
+                  </a>
+                </div>
+              <?php elseif ($filePath !== ''): ?>
+                <div class="chat-attachment mt-2">
+                  <a class="chat-attachment-file" href="<?= htmlspecialchars($filePath) ?>" target="_blank" rel="noopener">
+                    <?php include 'assets/images/icons/file.svg' ?>
+                    <span class="chat-attachment-name"><?= htmlspecialchars($fileName ?: basename($filePath)) ?></span>
+                  </a>
+                </div>
+              <?php endif; ?>
             </div>
           </div>
         <?php endforeach; ?>

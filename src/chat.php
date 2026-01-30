@@ -42,9 +42,9 @@ function chat_messages_for_task(int $userId, int $taskId, ?int $limit = null): a
     }
 
     return db_query(
-        'SELECT role, content
+        'SELECT role, content, file_path, file_name
          FROM (
-           SELECT id, role, content
+           SELECT id, role, content, file_path, file_name
            FROM chat_messages
            WHERE user_id = :user_id AND task_id = :task_id
            ORDER BY id DESC
