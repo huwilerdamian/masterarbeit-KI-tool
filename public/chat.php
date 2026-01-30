@@ -57,7 +57,7 @@ $messages = chat_messages_for_task($userId, $taskId);
         <button class="chat-icon-btn" type="button" aria-label="Mehr">
           <?php include 'assets/images/icons/plus.svg' ?>
         </button>
-        <textarea id="message" name="message" class="chat-textarea" rows="1" placeholder="Stelle irgendeine Frage"></textarea>
+        <textarea id="message" name="message" class="chat-textarea" rows="1" placeholder="Stelle irgendeine Frage" required></textarea>
         <button class="chat-send-btn" type="submit" aria-label="Senden">
           <?php include 'assets/images/icons/arrow_right.svg' ?>
         </button>

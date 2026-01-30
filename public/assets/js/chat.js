@@ -50,4 +50,11 @@ $(function () {
       scrollToBottom();
     }
   });
+
+  $message.on('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      $form.trigger('submit');
+    }
+  });
 });
