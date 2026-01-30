@@ -4,6 +4,13 @@
   --bs-primary-rgb: 29, 78, 216;
 }
 
+body {
+  background-image: url("../images/bg-image.jpg");
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+
 .btn-primary {
   background-color: var(--bs-primary);
   border-color: var(--bs-primary);

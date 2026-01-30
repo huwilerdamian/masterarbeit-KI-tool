@@ -22,45 +22,46 @@ $tasks = tasks($userId);
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body class="page-tasks">
-  <h1>Alle Tasks</h1>
+  <div class="container bg-white">
+    <h1>Alle Tasks</h1>
 
-  <?php if (empty($tasks)): ?>
-    <p>Keine Tasks gefunden.</p>
-  <?php else: ?>
-    <table>
-      <thead>
-        <tr>
-          <th>Titel</th>
-          <th>gelöst</th>
-          <th>korrigiert</th>
-          <th>Hilfe?</th>
-        </tr>
-      </thead>
-      <tbody>
-      <?php foreach ($tasks as $task): ?>
-        <tr>
-          <td><?= htmlspecialchars($task['title']) ?></td>
-          <td>
-            <button
-              type="button"
-              class="set-state"
-              data-task-id="<?= (int)$task['id'] ?>"
-              data-state="<?= htmlspecialchars($task['state']) ?>"
-            >
-              <?= htmlspecialchars($task['state']) ?>
-            </button>
-          </td>
-          <td>
-            <button type="button" class="set-corrected" data-task-id="<?= (int)$task['id'] ?>" data-corrected="<?= $task['corrected'] ? '1' : '0' ?>">
-              <?= $task['corrected'] ? 'Ja' : 'Nein' ?>
-            </button>
-          </td>
-          <td><a href="chat.php?id=<?= (int)$task['id'] ?>">Link zum Chat</a></td>
-        </tr>
-      <?php endforeach; ?>
-    </table>
-  <?php endif; ?>
-
+    <?php if (empty($tasks)): ?>
+      <p>Keine Tasks gefunden.</p>
+    <?php else: ?>
+      <table>
+        <thead>
+          <tr>
+            <th>Titel</th>
+            <th>gelöst</th>
+            <th>korrigiert</th>
+            <th>Hilfe?</th>
+          </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($tasks as $task): ?>
+          <tr>
+            <td><?= htmlspecialchars($task['title']) ?></td>
+            <td>
+              <button
+                type="button"
+                class="set-state"
+                data-task-id="<?= (int)$task['id'] ?>"
+                data-state="<?= htmlspecialchars($task['state']) ?>"
+              >
+                <?= htmlspecialchars($task['state']) ?>
+              </button>
+            </td>
+            <td>
+              <button type="button" class="set-corrected" data-task-id="<?= (int)$task['id'] ?>" data-corrected="<?= $task['corrected'] ? '1' : '0' ?>">
+                <?= $task['corrected'] ? 'Ja' : 'Nein' ?>
+              </button>
+            </td>
+            <td><a href="chat.php?id=<?= (int)$task['id'] ?>">Link zum Chat</a></td>
+          </tr>
+        <?php endforeach; ?>
+      </table>
+    <?php endif; ?>
+  </div>
   <script src="assets/libs/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/tasks.js"></script>
 </body>
