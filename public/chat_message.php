@@ -56,19 +56,28 @@ if (!$task) {
 try {
     $filePath = null;
     $fileName = null;
+    $imageDataUri = null;
 
     if ($uploadedFile !== null && $uploadedFile['error'] !== UPLOAD_ERR_NO_FILE) {
         if ($uploadedFile['error'] !== UPLOAD_ERR_OK) {
+            $uploadErrorMessages = [
+                UPLOAD_ERR_INI_SIZE => 'Die Datei ist zu groß (upload_max_filesize).',
+                UPLOAD_ERR_FORM_SIZE => 'Die Datei ist zu groß (FORM_SIZE).',
+                UPLOAD_ERR_PARTIAL => 'Die Datei wurde nur teilweise hochgeladen.',
+                UPLOAD_ERR_NO_FILE => 'Es wurde keine Datei hochgeladen.',
+                UPLOAD_ERR_NO_TMP_DIR => 'Kein temporäres Verzeichnis für Uploads vorhanden.',
+                UPLOAD_ERR_CANT_WRITE => 'Die Datei konnte nicht auf die Festplatte geschrieben werden.',
+                UPLOAD_ERR_EXTENSION => 'Der Upload wurde durch eine PHP-Erweiterung gestoppt.',
+            ];
+            $msg = $uploadErrorMessages[$uploadedFile['error']] ?? 'Unbekannter Upload-Fehler.';
             http_response_code(400);
-            echo json_encode(['ok' => false, 'error' => 'Fehler beim Upload.']);
+            echo json_encode(['ok' => false, 'error' => $msg]);
             exit;
         }
 
         $allowedMime = [
             'image/jpeg',
             'image/png',
-            'image/gif',
-            'image/webp',
         ];
 
         $maxSize = 20 * 1024 * 1024;
@@ -103,6 +112,14 @@ try {
             $fileName .= '.' . $ext;
         }
 
+        $imageData = file_get_contents($uploadedFile['tmp_name']);
+        if ($imageData === false) {
+            http_response_code(500);
+            echo json_encode(['ok' => false, 'error' => 'Upload fehlgeschlagen.']);
+            exit;
+        }
+        $imageDataUri = 'data:' . $mime . ';base64,' . base64_encode($imageData);
+
         $destination = $uploadDir . '/' . $fileName;
         if (!move_uploaded_file($uploadedFile['tmp_name'], $destination)) {
             http_response_code(500);
@@ -116,7 +133,7 @@ try {
 
     save_chat_message($userId, $taskId, 'user', $message, $filePath, $fileName);
     $history = chat_messages_for_task($userId, $taskId);
-    $reply = ai_chat_reply($message, $history);
+    $reply = ai_chat_reply($message, $history, $imageDataUri ?? null);
     if ($reply !== '') {
         save_chat_message($userId, $taskId, 'assistant', $reply);
     }

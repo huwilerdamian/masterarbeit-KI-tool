@@ -10,7 +10,7 @@
  * um die Logik klar zu kapseln und wiederverwendbar zu halten.
  */
 
-function ai_chat_reply(string $message, array $history = []): string
+function ai_chat_reply(string $message, array $history = [], ?string $imageDataUri = null): string
 {
     global $config;
 
@@ -22,9 +22,17 @@ function ai_chat_reply(string $message, array $history = []): string
     $model = $config['ai']['model'] ?? 'gpt-4.1-mini';
 
     $input = $message;
-    if (!empty($history)) {
+    $hasImage = $imageDataUri !== null && $imageDataUri !== '';
+    if (!empty($history) || $hasImage) {
         $messages = normalize_history_messages($history);
-        $messages[] = ['role' => 'user', 'content' => $message];
+        $contentParts = [];
+        if ($message !== '') {
+            $contentParts[] = ['type' => 'input_text', 'text' => $message];
+        }
+        if ($hasImage) {
+            $contentParts[] = ['type' => 'input_image', 'image_url' => $imageDataUri];
+        }
+        $messages[] = ['role' => 'user', 'content' => $contentParts];
         $input = $messages;
     }
 

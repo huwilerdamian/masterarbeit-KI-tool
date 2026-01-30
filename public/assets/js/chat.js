@@ -29,9 +29,9 @@ $(function () {
   $attachInput.on('change', function () {
     const file = $attachInput[0] && $attachInput[0].files[0] ? $attachInput[0].files[0] : null;
     if (file) {
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      const allowedTypes = ['image/jpeg', 'image/png'];
       if (!allowedTypes.includes(file.type)) {
-        $fileSelected.text('Nur JPG, PNG, GIF oder WebP erlaubt.');
+        $fileSelected.text('Nur JPG oder PNG erlaubt.');
         $filePreview.empty();
         $attachInput.val('');
         updateSendState();
