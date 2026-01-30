@@ -40,3 +40,19 @@ a {
 .tasks.container .row {
   min-height: 60px;
 }
+
+.bg-blue {
+  background-color: #DAE9F7;
+}
+
+.bg-green {
+  background-color: #D9F2D0;
+}
+
+.bg-grey {
+  background-color: #D1D1D1;
+}
+
+.bg-orange {
+  background-color: #FAE2D5;
+}

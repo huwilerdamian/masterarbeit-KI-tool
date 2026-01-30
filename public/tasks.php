@@ -25,19 +25,48 @@ $tasksByGroup = tasks_by_group($userId);
   <div class="container bg-white rounded p-4 shadow">
     <h1 class="border-bottom mb-5 mt-4">Matheplan «7a Gleichungen und Ungleichungen»</h1>
 
+    <div class="container tasks mb-5">
+      <div class="row bg-blue col-12 col-md-4 border">
+        <div class="d-flex align-items-center border-end"><div class="lh-1">Nicht selbständig lösen<br><small>(wird in Klassen/Gruppen- oder Partnerarbeit gelöst)</small></div></div>
+      </div>
+      <div class="row bg-green col-12 col-md-4 border">
+        <div class="d-flex align-items-center border-end"><div class="lh-1">Selbständig lösen<br><small>(Mindestanforderung)</small></div></div>
+      </div>
+      <div class="row bg-white col-12 col-md-4 border">
+        <div class="d-flex align-items-center border-end"><div class="lh-1">Selbständig lösen<br><small>(Zusatzmaterial)</small></div></div>
+      </div>
+      <div class="row bg-grey col-12 col-md-4 border">
+        <div class="d-flex align-items-center border-end"><div class="lh-1">Nicht Prüfungsrelevant<br><small>(Zusatzmaterial mit erhöhtem Niveau)</small></div></div>
+      </div>
+    </div>
+
     <?php if (empty($tasksByGroup)): ?>
       <p>Keine Tasks gefunden.</p>
     <?php else: ?>
       <?php foreach ($tasksByGroup as $group => $groupTasks): ?>
-        <div class="container border tasks mb-4">
-          <div class="row">
+        <div class="container border tasks mb-5">
+          <div class="row bg-orange fw-bold">
               <div class="d-flex align-items-center col-md-9 border-end">Teil <?= htmlspecialchars($group) ?></div>
-              <div class="d-flex align-items-center col-md-1 border-end justify-content-center">gelöst</div>
-              <div class="d-flex align-items-center col-md-1 border-end justify-content-center">korrigiert</div>
+              <div class="d-flex align-items-center col-md-1 border-end justify-content-center">Gelöst?</div>
+              <div class="d-flex align-items-center col-md-1 border-end justify-content-center">Korrigiert?</div>
               <div class="d-flex align-items-center col-md-1 justify-content-center">Hilfe?</div>
           </div>
           <?php foreach ($groupTasks as $task): ?>
-            <div class="row">
+            <?php
+              $type = (int)($task['type'] ?? 1);
+              $typeClass = 'type-' . $type;
+              $bgClass = '';
+              if ($type === 1) {
+                  $bgClass = 'bg-blue';
+              } elseif ($type === 2) {
+                  $bgClass = 'bg-green';
+              } elseif ($type === 3) {
+                  $bgClass = 'bg-white';
+              } elseif ($type === 4) {
+                  $bgClass = 'bg-grey';
+              }
+            ?>
+            <div class="row <?= htmlspecialchars(trim($typeClass . ' ' . $bgClass)) ?>">
               <div class="d-flex align-items-center col-md-9 border-end border-top p-2"><?= htmlspecialchars($task['title']) ?></div>
               <div class="d-flex align-items-center justify-content-center col-md-1 border-end border-top">
                 <span type="button"  class="set-corrected <?= $task['corrected'] ? 'true' : 'false' ?>" data-task-id="<?= (int)$task['id'] ?>" data-corrected="<?= $task['corrected'] ? '1' : '0' ?>">
