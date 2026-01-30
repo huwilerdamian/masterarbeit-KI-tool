@@ -54,10 +54,11 @@ $messages = chat_messages_for_task($userId, $taskId);
 
     <form id="chat-form" class="mb-3">
       <div class="chat-input">
-        <button class="chat-icon-btn" type="button" aria-label="Mehr">
+        <button id="attach-btn" class="chat-icon-btn" type="button" aria-label="Datei hinzufügen">
           <?php include 'assets/images/icons/plus.svg' ?>
         </button>
-        <textarea id="message" name="message" class="chat-textarea" rows="1" placeholder="Stelle irgendeine Frage" required></textarea>
+        <input id="attach-input" type="file" name="file" accept="image/*,application/pdf,text/plain,text/csv,application/msword,application/vnd.ms-excel,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation" capture hidden>
+        <textarea id="message" name="message" class="chat-textarea" rows="1" placeholder="Stelle irgendeine Frage"></textarea>
         <button class="chat-send-btn" type="submit" aria-label="Senden">
           <?php include 'assets/images/icons/arrow_right.svg' ?>
         </button>

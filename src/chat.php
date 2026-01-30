@@ -10,16 +10,18 @@
 /**
  * Speichert eine Chat-Nachricht in der Datenbank.
  */
-function save_chat_message(int $userId, int $taskId, string $role, string $content): void
+function save_chat_message(int $userId, int $taskId, string $role, string $content, ?string $filePath = null, ?string $fileName = null): void
 {
     db_execute(
-        'INSERT INTO chat_messages (user_id, task_id, role, content)
-         VALUES (:user_id, :task_id, :role, :content)',
+        'INSERT INTO chat_messages (user_id, task_id, role, content, file_path, file_name)
+         VALUES (:user_id, :task_id, :role, :content, :file_path, :file_name)',
         [
             'user_id' => $userId,
             'task_id' => $taskId,
             'role' => $role,
             'content' => $content,
+            'file_path' => $filePath,
+            'file_name' => $fileName,
         ]
     );
 }

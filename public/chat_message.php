@@ -15,18 +15,32 @@ if ($userId < 1) {
     exit;
 }
 
-$raw = file_get_contents('php://input');
-$data = json_decode($raw, true);
-if (!is_array($data)) {
-    http_response_code(400);
-    echo json_encode(['ok' => false, 'error' => 'Ungültige Anfrage.']);
-    exit;
+$contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+$isJson = str_starts_with($contentType, 'application/json');
+
+$taskId = 0;
+$message = '';
+$uploadedFile = null;
+
+if ($isJson) {
+    $raw = file_get_contents('php://input');
+    $data = json_decode($raw, true);
+    if (!is_array($data)) {
+        http_response_code(400);
+        echo json_encode(['ok' => false, 'error' => 'Ungültige Anfrage.']);
+        exit;
+    }
+    $taskId = isset($data['task_id']) ? (int)$data['task_id'] : 0;
+    $message = trim((string)($data['message'] ?? ''));
+} else {
+    $taskId = isset($_POST['task_id']) ? (int)$_POST['task_id'] : 0;
+    $message = trim((string)($_POST['message'] ?? ''));
+    if (isset($_FILES['file']) && is_array($_FILES['file'])) {
+        $uploadedFile = $_FILES['file'];
+    }
 }
 
-$taskId = isset($data['task_id']) ? (int)$data['task_id'] : 0;
-$message = trim((string)($data['message'] ?? ''));
-
-if ($taskId < 1 || $message === '') {
+if ($taskId < 1 || ($message === '' && $uploadedFile === null)) {
     http_response_code(400);
     echo json_encode(['ok' => false, 'error' => 'Task oder Nachricht fehlt.']);
     exit;
@@ -40,7 +54,80 @@ if (!$task) {
 }
 
 try {
-    save_chat_message($userId, $taskId, 'user', $message);
+    $filePath = null;
+    $fileName = null;
+
+    if ($uploadedFile !== null && $uploadedFile['error'] !== UPLOAD_ERR_NO_FILE) {
+        if ($uploadedFile['error'] !== UPLOAD_ERR_OK) {
+            http_response_code(400);
+            echo json_encode(['ok' => false, 'error' => 'Fehler beim Upload.']);
+            exit;
+        }
+
+        $allowedMime = [
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'application/pdf',
+            'text/plain',
+            'text/csv',
+            'application/msword',
+            'application/vnd.ms-excel',
+            'application/vnd.ms-powerpoint',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        ];
+
+        $maxSize = 20 * 1024 * 1024;
+        if ($uploadedFile['size'] > $maxSize) {
+            http_response_code(400);
+            echo json_encode(['ok' => false, 'error' => 'Datei ist zu groß.']);
+            exit;
+        }
+
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->file($uploadedFile['tmp_name']) ?: '';
+        if (!in_array($mime, $allowedMime, true)) {
+            http_response_code(400);
+            echo json_encode(['ok' => false, 'error' => 'Dateityp nicht erlaubt.']);
+            exit;
+        }
+
+        $today = date('Y-m-d');
+        $uploadDir = __DIR__ . '/uploads/chat/' . $today;
+        if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
+            http_response_code(500);
+            echo json_encode(['ok' => false, 'error' => 'Upload-Ordner konnte nicht erstellt werden.']);
+            exit;
+        }
+
+        $originalName = $uploadedFile['name'] ?? 'file';
+        $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+        $safeName = preg_replace('/[^a-zA-Z0-9._-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
+        $random = bin2hex(random_bytes(8));
+        $fileName = $safeName !== '' ? $safeName . '_' . $random : $random;
+        if ($ext !== '') {
+            $fileName .= '.' . $ext;
+        }
+
+        $destination = $uploadDir . '/' . $fileName;
+        if (!move_uploaded_file($uploadedFile['tmp_name'], $destination)) {
+            http_response_code(500);
+            echo json_encode(['ok' => false, 'error' => 'Upload fehlgeschlagen.']);
+            exit;
+        }
+
+        $filePath = 'uploads/chat/' . $today . '/' . $fileName;
+        $fileName = $originalName;
+
+        if ($message === '') {
+            $message = 'Datei: ' . $originalName;
+        }
+    }
+
+    save_chat_message($userId, $taskId, 'user', $message, $filePath, $fileName);
     $history = chat_messages_for_task($userId, $taskId);
     $reply = ai_chat_reply($message, $history);
     if ($reply !== '') {

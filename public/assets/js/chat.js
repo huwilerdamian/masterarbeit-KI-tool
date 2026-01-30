@@ -2,6 +2,8 @@ $(function () {
   const $list = $('#chat-list');
   const $form = $('#chat-form');
   const $message = $('#message');
+  const $attachBtn = $('#attach-btn');
+  const $attachInput = $('#attach-input');
   const taskId = window.__TASK_ID__;
   const scrollToBottom = () => {
     $list.scrollTop($list.prop('scrollHeight'));
@@ -9,28 +11,40 @@ $(function () {
 
   scrollToBottom();
 
+  $attachBtn.on('click', function () {
+    $attachInput.trigger('click');
+  });
+
   $form.on('submit', async function (e) {
     e.preventDefault();
     const text = $message.val().trim();
-    if (!text) {
+    const file = $attachInput[0] && $attachInput[0].files[0] ? $attachInput[0].files[0] : null;
+    if (!text && !file) {
       alert('Bitte eine Nachricht eingeben.');
       return;
     }
 
+    const displayText = text || (file ? `Datei: ${file.name}` : '');
     $list.append(
       `<div class="chat-message d-flex justify-content-end">` +
         `<div class="chat-bubble chat-user">` +
-          `<div class="chat-content">${$('<div>').text(text).html()}</div>` +
+          `<div class="chat-content">${$('<div>').text(displayText).html()}</div>` +
         `</div>` +
       `</div>`
     );
     scrollToBottom();
     $message.val('');
 
+    const formData = new FormData();
+    formData.append('task_id', taskId);
+    formData.append('message', text);
+    if (file) {
+      formData.append('file', file);
+    }
+
     const res = await fetch('chat_message.php', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ task_id: taskId, message: text }),
+      body: formData,
     });
 
     const data = await res.json();
@@ -48,6 +62,10 @@ $(function () {
         `</div>`
       );
       scrollToBottom();
+    }
+
+    if ($attachInput[0]) {
+      $attachInput.val('');
     }
   });
 
