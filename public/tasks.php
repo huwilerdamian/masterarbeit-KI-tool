@@ -27,16 +27,16 @@ $tasksByGroup = tasks_by_group($userId);
 
     <div class="container tasks mb-5">
       <div class="row bg-blue col-12 col-md-4 border">
-        <div class="d-flex align-items-center border-end"><div class="lh-1">Nicht selbständig lösen<br><small>(wird in Klassen/Gruppen- oder Partnerarbeit gelöst)</small></div></div>
+        <div class="d-flex align-items-center border-end"><div class="lh-1"><strong>Nicht selbständig lösen</strong><br><small>(wird in Klassen/Gruppen- oder Partnerarbeit gelöst)</small></div></div>
       </div>
       <div class="row bg-green col-12 col-md-4 border">
-        <div class="d-flex align-items-center border-end"><div class="lh-1">Selbständig lösen<br><small>(Mindestanforderung)</small></div></div>
+        <div class="d-flex align-items-center border-end"><div class="lh-1"><strong>Selbständig lösen</strong><br><small>(Mindestanforderung)</small></div></div>
       </div>
       <div class="row bg-white col-12 col-md-4 border">
-        <div class="d-flex align-items-center border-end"><div class="lh-1">Selbständig lösen<br><small>(Zusatzmaterial)</small></div></div>
+        <div class="d-flex align-items-center border-end"><div class="lh-1"><strong>Selbständig lösen</strong><br><small>(Zusatzmaterial)</small></div></div>
       </div>
       <div class="row bg-grey col-12 col-md-4 border">
-        <div class="d-flex align-items-center border-end"><div class="lh-1">Nicht Prüfungsrelevant<br><small>(Zusatzmaterial mit erhöhtem Niveau)</small></div></div>
+        <div class="d-flex align-items-center border-end"><div class="lh-1"><strong>Nicht Prüfungsrelevant</strong><br><small>(Zusatzmaterial mit erhöhtem Niveau)</small></div></div>
       </div>
     </div>
 
