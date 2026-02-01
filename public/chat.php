@@ -2,6 +2,8 @@
 require __DIR__ . '/../init.php';
 require __DIR__ . '/../src/tasks.php';
 require __DIR__ . '/../src/chat.php';
+require __DIR__ . '/../src/task_files.php';
+require __DIR__ . '/../src/ai_service.php';
 
 session_start();
 
@@ -21,6 +23,12 @@ $task = task_by_id($taskId);
 if (!$task) {
     header('Location: tasks.php');
     exit;
+}
+
+try {
+    ensure_task_files_in_vector_store($taskId, $userId);
+} catch (Throwable $e) {
+    error_log('Vector Store Upload fehlgeschlagen: ' . $e->getMessage());
 }
 
 $messages = chat_messages_for_task($userId, $taskId);

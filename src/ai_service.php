@@ -10,7 +10,7 @@
  * um die Logik klar zu kapseln und wiederverwendbar zu halten.
  */
 
-function ai_chat_reply(string $message, array $history = [], ?string $imageDataUri = null): string
+function ai_chat_reply(string $message, array $history = [], ?string $imageDataUri = null, ?int $taskId = null): string
 {
     global $config;
 
@@ -36,10 +36,25 @@ function ai_chat_reply(string $message, array $history = [], ?string $imageDataU
         $input = $messages;
     }
 
-    $payload = json_encode([
+    $payloadData = [
         'model' => $model,
         'input' => $input,
-    ]);
+    ];
+
+    $vectorStoreId = $config['ai']['vector_store_id'] ?? '';
+    if ($taskId !== null && $taskId > 0 && $vectorStoreId !== '') {
+        $payloadData['tools'] = [[
+            'type' => 'file_search',
+            'vector_store_ids' => [$vectorStoreId],
+            'filters' => [
+                'type' => 'in',
+                'key' => 'task_id',
+                'value' => [(int)$taskId],
+            ],
+        ]];
+    }
+
+    $payload = json_encode($payloadData);
 
     $ch = curl_init('https://api.openai.com/v1/responses');
     curl_setopt_array($ch, [
@@ -71,6 +86,92 @@ function ai_chat_reply(string $message, array $history = [], ?string $imageDataU
     }
 
     return extract_openai_text($data);
+}
+
+function openai_api_request(string $method, string $url, array $headers = [], $body = null): array
+{
+    global $config;
+
+    $apiKey = $config['ai']['api_key'] ?? '';
+    if ($apiKey === '') {
+        throw new RuntimeException('OPENAI_API_KEY fehlt.');
+    }
+
+    $ch = curl_init($url);
+    $baseHeaders = [
+        'Authorization: Bearer ' . $apiKey,
+    ];
+    $allHeaders = array_merge($baseHeaders, $headers);
+
+    curl_setopt_array($ch, [
+        CURLOPT_CUSTOMREQUEST => $method,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => $allHeaders,
+        CURLOPT_POSTFIELDS => $body,
+    ]);
+
+    $raw = curl_exec($ch);
+    if ($raw === false) {
+        $err = curl_error($ch);
+        throw new RuntimeException('OpenAI Request fehlgeschlagen: ' . $err);
+    }
+
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $data = json_decode($raw, true);
+    if (!is_array($data)) {
+        throw new RuntimeException('Ungültige OpenAI Antwort.');
+    }
+    if ($httpCode >= 400) {
+        $msg = $data['error']['message'] ?? 'OpenAI Fehler.';
+        throw new RuntimeException($msg);
+    }
+
+    return $data;
+}
+
+function openai_upload_file(string $absolutePath): string
+{
+    if (!is_file($absolutePath)) {
+        throw new RuntimeException('Datei nicht gefunden: ' . $absolutePath);
+    }
+
+    $data = openai_api_request(
+        'POST',
+        'https://api.openai.com/v1/files',
+        [],
+        [
+            'purpose' => 'assistants',
+            'file' => new CURLFile($absolutePath),
+        ]
+    );
+
+    return (string)($data['id'] ?? '');
+}
+
+function openai_attach_file_to_vector_store(string $fileId, array $attributes = []): string
+{
+    global $config;
+
+    $vectorStoreId = $config['ai']['vector_store_id'] ?? '';
+    if ($vectorStoreId === '') {
+        throw new RuntimeException('OPENAI_VECTOR_STORE_ID fehlt.');
+    }
+
+    $payload = [
+        'file_id' => $fileId,
+    ];
+    if (!empty($attributes)) {
+        $payload['attributes'] = $attributes;
+    }
+
+    $data = openai_api_request(
+        'POST',
+        'https://api.openai.com/v1/vector_stores/' . $vectorStoreId . '/files',
+        ['Content-Type: application/json'],
+        json_encode($payload)
+    );
+
+    return (string)($data['id'] ?? '');
 }
 
 function extract_openai_text(array $data): string

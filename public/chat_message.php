@@ -133,7 +133,7 @@ try {
 
     save_chat_message($userId, $taskId, 'user', $message, $filePath, $fileName);
     $history = chat_messages_for_task($userId, $taskId);
-    $reply = ai_chat_reply($message, $history, $imageDataUri ?? null);
+    $reply = ai_chat_reply($message, $history, $imageDataUri ?? null, $taskId);
     if ($reply !== '') {
         save_chat_message($userId, $taskId, 'assistant', $reply);
     }
