@@ -37,24 +37,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link rel="stylesheet" href="assets/css/app.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
-<body class="page-login">
-  <h1>Login</h1>
+<body class="page-login p-4">
+  <div class="container bg-white rounded p-4 shadow">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-6 col-lg-4">
+        <h1 class="border-bottom mb-4 mt-2">Login</h1>
 
-  <?php if ($error): ?>
-    <p style="color: red;"><?= htmlspecialchars($error) ?></p>
-  <?php endif; ?>
+        <?php if ($error): ?>
+          <div class="alert alert-danger" role="alert"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
 
-  <form method="post" action="login.php">
-    <div>
-      <label for="username">Username</label>
-      <input id="username" name="username" type="text" required>
+        <form method="post" action="login.php">
+          <div class="mb-3">
+            <label class="form-label" for="username">Username</label>
+            <input class="form-control" id="username" name="username" type="text" required autocomplete="username">
+          </div>
+          <div class="mb-4">
+            <label class="form-label" for="password">Passwort</label>
+            <input class="form-control" id="password" name="password" type="password" required autocomplete="current-password">
+          </div>
+          <button class="btn-login w-100" type="submit">Anmelden</button>
+        </form>
+      </div>
     </div>
-    <div>
-      <label for="password">Passwort</label>
-      <input id="password" name="password" type="password" required>
-    </div>
-    <button type="submit">Anmelden</button>
-  </form>
+  </div>
   <script src="assets/libs/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
