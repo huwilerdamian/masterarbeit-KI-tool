@@ -12,6 +12,128 @@ $(function () {
     $list.scrollTop($list.prop('scrollHeight'));
   };
 
+  // Markdown/LaTeX rendering helpers (marked + DOMPurify + KaTeX).
+  const hasMarkdownRenderer = () => typeof window.marked !== 'undefined' && typeof window.DOMPurify !== 'undefined';
+
+  // Decode HTML-escaped data-raw content back to the original text.
+  const decodeHtml = (value) => {
+    if (!value) {
+      return '';
+    }
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = value;
+    return textarea.value;
+  };
+
+  // Normalize math block delimiters:
+  // Converts plain block format:
+  // [
+  //   ...formula...
+  // ]
+  // into KaTeX-compatible \[ ... \] blocks.
+  const normalizeMathDelimiters = (text) => {
+    if (!text) {
+      return '';
+    }
+    const normalized = text.replace(/\r\n?/g, '\n');
+    const withBlocks = normalized.replace(/(^|\n)\s*\[\s*\n([\s\S]*?)\n\s*\](?=\n|$)/g, (match, start, inner) => {
+      return `${start}\\[${inner}\\]`;
+    });
+    return withBlocks;
+  };
+
+  // Render Markdown to sanitized HTML (prevents XSS).
+  const renderMarkdown = (text) => {
+    if (!hasMarkdownRenderer()) {
+      const escaped = $('<div>').text(text).html();
+      return escaped.replace(/\n/g, '<br>');
+    }
+
+    if (typeof window.marked.setOptions === 'function') {
+      window.marked.setOptions({
+        breaks: true,
+        gfm: true,
+        headerIds: false,
+        mangle: false,
+      });
+    }
+
+    const rawHtml = window.marked.parse(text || '');
+    return window.DOMPurify.sanitize(rawHtml, { USE_PROFILES: { html: true } });
+  };
+
+  // Extract LaTeX blocks before Markdown parsing so backslashes are preserved.
+  const extractMath = (text) => {
+    if (!text) {
+      return { text: '', replacements: [] };
+    }
+
+    const replacements = [];
+    let working = text;
+
+    const addReplacement = (match) => {
+      const token = `@@MATH_${replacements.length}@@`;
+      replacements.push({ token, value: match });
+      return token;
+    };
+
+    // Extract block and inline LaTeX so Markdown doesn't consume backslashes.
+    working = working.replace(/\\\[[\s\S]*?\\\]/g, addReplacement);
+    working = working.replace(/\\\([\s\S]*?\\\)/g, addReplacement);
+
+    return { text: working, replacements };
+  };
+
+  // Restore extracted LaTeX back into the rendered HTML.
+  const restoreMath = (html, replacements) => {
+    if (!replacements.length) {
+      return html;
+    }
+    let restored = html;
+    replacements.forEach((item) => {
+      restored = restored.replaceAll(item.token, item.value);
+    });
+    return restored;
+  };
+
+  // Render LaTeX to HTML using KaTeX auto-render.
+  const renderMath = (element) => {
+    if (typeof window.renderMathInElement !== 'function') {
+      return;
+    }
+
+    window.renderMathInElement(element, {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '\\[', right: '\\]', display: true },
+        { left: '\\(', right: '\\)', display: false },
+        { left: '$', right: '$', display: false },
+      ],
+      throwOnError: false,
+    });
+  };
+
+  // Full render pipeline for a single message:
+  // decode -> normalize math blocks -> extract math -> Markdown -> restore math -> KaTeX.
+  const renderMessageContent = (element, text) => {
+    const decodedText = decodeHtml(text);
+    const normalizedText = normalizeMathDelimiters(decodedText);
+    const extracted = extractMath(normalizedText);
+    const html = renderMarkdown(extracted.text);
+    const restoredHtml = restoreMath(html, extracted.replacements);
+    element.innerHTML = restoredHtml;
+    renderMath(element);
+  };
+
+  // Render all messages on initial page load (server-rendered HTML).
+  const renderExistingMessages = () => {
+    document.querySelectorAll('.chat-content[data-raw]').forEach((element) => {
+      const text = element.getAttribute('data-raw') || '';
+      renderMessageContent(element, text);
+    });
+  };
+
+  renderExistingMessages();
   scrollToBottom();
 
   const updateSendState = () => {
@@ -62,13 +184,11 @@ $(function () {
     const isImage = file && file.type && file.type.startsWith('image/');
     const fileUrl = file ? URL.createObjectURL(file) : '';
     const previewUrl = isImage ? fileUrl : '';
-    const fileNameHtml = file ? $('<div>').text(file.name).html() : '';
-    const messageHtml = $('<div>').text(text).html();
-    const contentHtml = text ? `<div class="chat-content">${messageHtml}</div>` : '';
+    const contentHtml = text ? `<div class="chat-content" data-raw="${$('<div>').text(text).html()}"></div>` : '';
     const attachmentHtml = previewUrl
       ? `<div class="chat-attachment mt-2"><a href="${fileUrl}" target="_blank" rel="noopener"><img class="chat-attachment-image" src="${previewUrl}" alt="Anhang"></a></div>`
       : '';
-    $list.append(
+    const $userMessage = $(
       `<div class="chat-message d-flex justify-content-end">` +
         `<div class="chat-bubble chat-user">` +
           contentHtml +
@@ -76,6 +196,13 @@ $(function () {
         `</div>` +
       `</div>`
     );
+    $list.append($userMessage);
+    if (text) {
+      const contentEl = $userMessage.find('.chat-content').get(0);
+      if (contentEl) {
+        renderMessageContent(contentEl, text);
+      }
+    }
     scrollToBottom();
     $message.val('');
 
@@ -98,13 +225,18 @@ $(function () {
     }
 
     if (data.reply) {
-      $list.append(
+      const $assistantMessage = $(
         `<div class="chat-message d-flex justify-content-start">` +
           `<div class="chat-bubble chat-assistant">` +
-            `<div class="chat-content">${$('<div>').text(data.reply).html()}</div>` +
+            `<div class="chat-content" data-raw="${$('<div>').text(data.reply).html()}"></div>` +
           `</div>` +
         `</div>`
       );
+      $list.append($assistantMessage);
+      const contentEl = $assistantMessage.find('.chat-content').get(0);
+      if (contentEl) {
+        renderMessageContent(contentEl, data.reply);
+      }
       scrollToBottom();
     }
 

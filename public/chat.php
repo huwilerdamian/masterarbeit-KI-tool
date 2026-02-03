@@ -40,7 +40,12 @@ $messages = chat_messages_for_task($userId, $taskId);
   <title>Task</title>
   <link rel="stylesheet" href="assets/libs/bootstrap-5.3.8-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.5/dist/purify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 </head>
 <body class="page-chat p-4">
   <div class="container bg-white rounded p-4 shadow">
@@ -62,7 +67,7 @@ $messages = chat_messages_for_task($userId, $taskId);
           ?>
           <div class="chat-message d-flex <?= $isUser ? 'justify-content-end' : 'justify-content-start' ?>">
             <div class="chat-bubble <?= $isUser ? 'chat-user' : 'chat-assistant' ?>">
-              <div class="chat-content"><?= nl2br(htmlspecialchars($msg['content'])) ?></div>
+              <div class="chat-content" data-raw="<?= htmlspecialchars($msg['content'], ENT_QUOTES) ?>"></div>
               <?php if ($filePath !== '' && $isImage): ?>
                 <div class="chat-attachment mt-2">
                   <a href="<?= htmlspecialchars($filePath) ?>" target="_blank" rel="noopener">
