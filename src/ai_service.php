@@ -49,7 +49,7 @@ function ai_chat_reply(string $message, array $history = [], ?string $imageDataU
             'filters' => [
                 'type' => 'in',
                 'key' => 'task_id',
-                'value' => [(int)$taskId],
+                'value' => [(int)$taskId, 0],
             ],
         ]];
     }

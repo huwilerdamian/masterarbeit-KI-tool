@@ -13,7 +13,8 @@ function task_files_for_task(int $taskId): array
     return db_query(
         'SELECT id, task_id, `TYPE` AS type, file_path, file_id, vector_store_file_id
          FROM task_files
-         WHERE task_id = :task_id',
+         WHERE task_id = :task_id
+            OR task_id IS NULL',
         [
             'task_id' => $taskId,
         ]
@@ -58,8 +59,12 @@ function ensure_task_files_in_vector_store(int $taskId, int $userId): void
             $fileId = openai_upload_file($absolutePath);
         }
 
+        $isGlobal = !array_key_exists('task_id', $file) || $file['task_id'] === null;
+        $taskAttributeId = $isGlobal ? 0 : (int)$file['task_id'];
+
         $attributes = [
-            'task_id' => $taskId,
+            'task_id' => $taskAttributeId,
+            'is_global' => $isGlobal,
             'task_file_id' => (int)$file['id'],
             'type' => (string)($file['type'] ?? ''),
             'user_id' => $userId,
