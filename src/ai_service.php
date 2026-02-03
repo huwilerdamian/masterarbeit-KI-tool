@@ -10,7 +10,7 @@
  * um die Logik klar zu kapseln und wiederverwendbar zu halten.
  */
 
-function ai_chat_reply(string $message, array $history = [], ?string $imageDataUri = null, ?int $taskId = null): string
+function ai_chat_reply(string $message, array $history = [], ?string $imageDataUri = null, ?int $taskId = null, ?string $instructions = null): string
 {
     global $config;
 
@@ -40,6 +40,9 @@ function ai_chat_reply(string $message, array $history = [], ?string $imageDataU
         'model' => $model,
         'input' => $input,
     ];
+    if (is_string($instructions) && trim($instructions) !== '') {
+        $payloadData['instructions'] = trim($instructions);
+    }
 
     $vectorStoreId = $config['ai']['vector_store_id'] ?? '';
     if ($taskId !== null && $taskId > 0 && $vectorStoreId !== '') {
