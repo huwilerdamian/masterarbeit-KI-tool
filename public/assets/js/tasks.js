@@ -41,10 +41,23 @@ $(function () {
 
   $(document).on('click', '.tasks-filter-btn', function () {
     const $btn = $(this);
+    if ($btn.hasClass('tasks-legend-toggle')) {
+      return;
+    }
     const group = String($btn.data('group'));
     $('.tasks-filter-btn').removeClass('is-active');
     $btn.addClass('is-active');
     applyGroupFilter(group);
+  });
+
+  $(document).on('click', '.tasks-legend-toggle', function () {
+    const $btn = $(this);
+    const $legend = $('.tasks-legend');
+    const isVisible = $legend.is(':visible');
+    $legend.stop(true, true).slideToggle(180);
+    $btn.attr('aria-expanded', isVisible ? 'false' : 'true');
+    $legend.attr('aria-hidden', isVisible ? 'true' : 'false');
+    $btn.toggleClass('is-active', !isVisible);
   });
 
   updateProgressCircle();

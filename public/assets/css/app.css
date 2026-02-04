@@ -83,6 +83,10 @@ a {
   border-bottom-color: #1e4f9a;
 }
 
+.tasks-legend {
+  display: none;
+}
+
 .icon-robot path:nth-child(1) {
     opacity: 0.6;
     transition: opacity 0.3s ease-in-out, fill 0.3s ease-in-out;

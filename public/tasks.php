@@ -57,26 +57,29 @@ $progressPercent = $progressTotal > 0 ? (int)round(($progressDone / $progressTot
     </div>
 
     <?php if (!empty($tasksByGroup)): ?>
-      <div class="tasks-filters d-flex gap-2 mb-4">
-        <button type="button" class="tasks-filter-btn is-active" data-group="all">Alle</button>
-        <?php foreach (array_keys($tasksByGroup) as $group): ?>
-          <button type="button" class="tasks-filter-btn" data-group="<?= htmlspecialchars((string)$group) ?>">Teil <?= htmlspecialchars((string)$group) ?></button>
-        <?php endforeach; ?>
+      <div class="tasks-filters d-flex align-items-center justify-content-between mb-4">
+        <div class="d-flex gap-2">
+          <button type="button" class="tasks-filter-btn is-active" data-group="all">Alle</button>
+          <?php foreach (array_keys($tasksByGroup) as $group): ?>
+            <button type="button" class="tasks-filter-btn" data-group="<?= htmlspecialchars((string)$group) ?>">Teil <?= htmlspecialchars((string)$group) ?></button>
+          <?php endforeach; ?>
+        </div>
+        <button type="button" class="tasks-filter-btn tasks-legend-toggle" aria-expanded="false">Legende</button>
       </div>
     <?php endif; ?>
 
-    <div class="container tasks mb-5">
-      <div class="row bg-blue col-12 col-md-4 ps-4 pe-4 border">
-        <div class="d-flex align-items-center border-end"><div class="lh-1"><strong>Nicht selbständig lösen</strong><br><small>(wird in Klassen/Gruppen- oder Partnerarbeit gelöst)</small></div></div>
+    <div class="container tasks mb-5 tasks-legend" aria-hidden="true">
+      <div class="row bg-blue col-12 col-md-4 ps-4 pe-4 d-flex align-items-center border">
+        <div class="lh-1"><strong>Nicht selbständig lösen</strong><br><small>(wird in Klassen/Gruppen- oder Partnerarbeit gelöst)</small></div>
       </div>
-      <div class="row bg-green col-12 col-md-4 ps-4 pe-4 border">
-        <div class="d-flex align-items-center border-end"><div class="lh-1"><strong>Selbständig lösen</strong><br><small>(Mindestanforderung)</small></div></div>
+      <div class="row bg-green col-12 col-md-4 ps-4 pe-4 d-flex align-items-center border">
+        <div class="lh-1"><strong>Selbständig lösen</strong><br><small>(Mindestanforderung)</small></div>
       </div>
-      <div class="row bg-white col-12 col-md-4 ps-4 pe-4 border">
-        <div class="d-flex align-items-center border-end"><div class="lh-1"><strong>Selbständig lösen</strong><br><small>(Zusatzmaterial)</small></div></div>
+      <div class="row bg-white col-12 col-md-4 ps-4 pe-4 d-flex align-items-center border">
+        <div class="lh-1"><strong>Selbständig lösen</strong><br><small>(Zusatzmaterial)</small></div>
       </div>
-      <div class="row bg-grey col-12 col-md-4 ps-4 pe-4 border">
-        <div class="d-flex align-items-center border-end"><div class="lh-1"><strong>Nicht Prüfungsrelevant</strong><br><small>(Zusatzmaterial mit erhöhtem Niveau)</small></div></div>
+      <div class="row bg-grey col-12 col-md-4 ps-4 pe-4 d-flex align-items-center border">
+        <div class="lh-1"><strong>Nicht Prüfungsrelevant</strong><br><small>(Zusatzmaterial mit erhöhtem Niveau)</small></div>
       </div>
     </div>
 
