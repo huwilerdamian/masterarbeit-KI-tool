@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/../init.php';
 require __DIR__ . '/../src/tasks.php';
+require __DIR__ . '/../src/task_files.php';
 
 session_start();
 
@@ -19,7 +20,9 @@ $tasksByGroup = tasks_by_group($userId);
   <title>Tasks</title>
   <link rel="stylesheet" href="assets/libs/bootstrap-5.3.8-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/featherlight@1.7.14/release/featherlight.min.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/featherlight@1.7.14/release/featherlight.min.js"></script>
 </head>
 <body class="page-tasks p-4">
   <div class="container bg-white rounded p-4 shadow">
@@ -65,9 +68,26 @@ $tasksByGroup = tasks_by_group($userId);
               } elseif ($type === 4) {
                   $bgClass = 'bg-grey';
               }
+              $exerciseFilePath = '';
+              $exerciseIsImage = false;
+              $exerciseFile = task_file_for_task_by_type((int)$task['id'], 'exercise');
+              if ($exerciseFile) {
+                  $exerciseFilePath = (string)($exerciseFile['file_path'] ?? '');
+                  if ($exerciseFilePath !== '') {
+                      $ext = strtolower(pathinfo($exerciseFilePath, PATHINFO_EXTENSION));
+                      $exerciseIsImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'], true);
+                  }
+              }
             ?>
             <div class="row <?= htmlspecialchars(trim($typeClass . ' ' . $bgClass)) ?>">
-              <div class="d-flex align-items-center col-md-9 border-end border-top p-2 ps-4 pe-4"><?= htmlspecialchars($task['title']) ?></div>
+              <div class="d-flex align-items-center col-md-9 border-end border-top p-2 ps-4 pe-4 gap-2">
+                <span><?= htmlspecialchars($task['title']) ?></span>
+                <?php if ($exerciseFilePath !== ''): ?>
+                  <a class="text-decoration-none" href="<?= htmlspecialchars($exerciseFilePath) ?>" data-featherlightopen="<?= htmlspecialchars($exerciseFilePath) ?>" <?= $exerciseIsImage ? 'data-featherlight="image"' : 'data-featherlight="iframe"' ?> <?= $exerciseIsImage ? '' : 'data-featherlight-iframe-width="100%" data-featherlight-iframe-height="80vh"' ?> aria-label="Aufgabendokument anzeigen">
+                    <?php include 'assets/images/icons/eye.svg' ?>
+                  </a>
+                <?php endif; ?>
+              </div>
               <div class="d-flex align-items-center justify-content-center col-md-1 border-end border-top">
                 <span type="button"  class="set-corrected <?= $task['corrected'] ? 'true' : 'false' ?>" data-task-id="<?= (int)$task['id'] ?>" data-corrected="<?= $task['corrected'] ? '1' : '0' ?>">
                   <?php include 'assets/images/icons/check.svg' ?>

@@ -22,6 +22,31 @@ function task_files_for_task(int $taskId): array
 }
 
 /**
+ * Lädt die erste Task-Datei eines Typs für einen Task.
+ */
+function task_file_for_task_by_type(int $taskId, string $type): ?array
+{
+    $rows = db_query(
+        'SELECT id, task_id, `TYPE` AS type, file_path, file_id, vector_store_file_id
+         FROM task_files
+         WHERE (`TYPE` = :type)
+           AND (task_id = :task_id OR task_id IS NULL)
+         ORDER BY task_id IS NULL, id
+         LIMIT 1',
+        [
+            'task_id' => $taskId,
+            'type' => $type,
+        ]
+    );
+
+    if (empty($rows)) {
+        return null;
+    }
+
+    return $rows[0];
+}
+
+/**
  * Stellt sicher, dass alle Task-Dateien im Vector Store vorhanden sind.
  */
 function ensure_task_files_in_vector_store(int $taskId, int $userId): void
