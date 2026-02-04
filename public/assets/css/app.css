@@ -7,6 +7,30 @@ body {
   min-height: 100vh;
 }
 
+body.page-chat {
+  height: 100vh;
+  overflow: hidden;
+}
+
+body.page-chat .container {
+  height: calc(100vh - 3rem);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+body.page-chat .mb-4 {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.page-chat #chat-list {
+  max-height: none;
+  height: 100%;
+  overflow-y: auto;
+}
+
 a {
   color: var(--bs-body-color);
 }
@@ -87,6 +111,21 @@ a {
   display: none;
 }
 
+.chat-back-btn {
+  display: inline-block;
+  background: #111;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 2px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.chat-back-btn:hover {
+  color: #bcbcbc;
+}
+
 .tasks-view-btn {
   background: #bcbcbc;
   color: #fff;
@@ -153,7 +192,7 @@ a {
 }
 
 .chat-bubble {
-  max-width: 70%;
+  max-width: 95%;
   padding: 10px 14px;
   border-radius: 16px;
   background-color: transparent;
