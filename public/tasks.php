@@ -118,14 +118,33 @@ $progressPercent = $progressTotal > 0 ? (int)round(($progressDone / $progressTot
                       $exerciseIsImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'], true);
                   }
               }
+              $solutionFilePath = '';
+              $solutionIsImage = false;
+              $solutionFile = task_file_for_task_by_type((int)$task['id'], 'solution');
+              if ($solutionFile) {
+                  $solutionFilePath = (string)($solutionFile['file_path'] ?? '');
+                  if ($solutionFilePath !== '') {
+                      $ext = strtolower(pathinfo($solutionFilePath, PATHINFO_EXTENSION));
+                      $solutionIsImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'], true);
+                  }
+              }
             ?>
             <div class="row <?= htmlspecialchars(trim($typeClass . ' ' . $bgClass)) ?>" data-task-type="<?= (int)$type ?>" data-task-corrected="<?= !empty($task['corrected']) ? '1' : '0' ?>" data-task-state="<?= !empty($task['state']) ? '1' : '0' ?>">
               <div class="d-flex align-items-center col-md-9 border-end border-top p-2 ps-4 pe-4 gap-2">
                 <span><?= htmlspecialchars($task['title']) ?></span>
-                <?php if ($exerciseFilePath !== ''): ?>
-                  <a class="tasks-view-btn ms-auto" href="<?= htmlspecialchars($exerciseFilePath) ?>" data-featherlightopen="<?= htmlspecialchars($exerciseFilePath) ?>" <?= $exerciseIsImage ? 'data-featherlight="image"' : 'data-featherlight="iframe"' ?> <?= $exerciseIsImage ? '' : 'data-featherlight-iframe-width="100%" data-featherlight-iframe-height="80vh"' ?> aria-label="Aufgabendokument anzeigen">
-                    <?php include 'assets/images/icons/eye.svg' ?> Aufgabe ansehen
-                  </a>
+                <?php if ($exerciseFilePath !== '' || $solutionFilePath !== ''): ?>
+                  <div class="d-flex align-items-center gap-2 ms-auto">
+                    <?php if ($exerciseFilePath !== ''): ?>
+                      <a class="tasks-view-btn" href="<?= htmlspecialchars($exerciseFilePath) ?>" data-featherlightopen="<?= htmlspecialchars($exerciseFilePath) ?>" <?= $exerciseIsImage ? 'data-featherlight="image"' : 'data-featherlight="iframe"' ?> <?= $exerciseIsImage ? '' : 'data-featherlight-iframe-width="100%" data-featherlight-iframe-height="80vh"' ?> aria-label="Aufgabendokument anzeigen">
+                        <?php include 'assets/images/icons/eye.svg' ?> Aufgabe ansehen
+                      </a>
+                    <?php endif; ?>
+                    <?php if ($solutionFilePath !== ''): ?>
+                      <a class="tasks-view-btn" href="<?= htmlspecialchars($solutionFilePath) ?>" data-featherlightopen="<?= htmlspecialchars($solutionFilePath) ?>" <?= $solutionIsImage ? 'data-featherlight="image"' : 'data-featherlight="iframe"' ?> <?= $solutionIsImage ? '' : 'data-featherlight-iframe-width="100%" data-featherlight-iframe-height="80vh"' ?> aria-label="Lösungsdokument anzeigen">
+                        <?php include 'assets/images/icons/eye.svg' ?> Lösung ansehen
+                      </a>
+                    <?php endif; ?>
+                  </div>
                 <?php endif; ?>
               </div>
               <div class="d-flex align-items-center justify-content-center col-md-1 border-end border-top">
