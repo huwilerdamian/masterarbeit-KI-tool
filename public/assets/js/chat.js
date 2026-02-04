@@ -7,9 +7,28 @@ $(function () {
   const $fileSelected = $('#file-selected');
   const $filePreview = $('#file-preview');
   const $sendBtn = $('.chat-send-btn');
+  const $loading = $('#chat-loading');
   const taskId = window.__TASK_ID__;
   const scrollToBottom = () => {
     $list.scrollTop($list.prop('scrollHeight'));
+  };
+
+  const moveLoadingToEnd = () => {
+    if ($loading.length) {
+      $loading.appendTo($list);
+    }
+  };
+
+  const setLoading = (isLoading) => {
+    if (isLoading) {
+      moveLoadingToEnd();
+    }
+    $loading.toggle(!!isLoading);
+    $loading.attr('aria-hidden', isLoading ? 'false' : 'true');
+    $sendBtn.prop('disabled', !!isLoading);
+    if (isLoading) {
+      scrollToBottom();
+    }
   };
 
   // Markdown/LaTeX rendering helpers (marked + DOMPurify + KaTeX).
@@ -197,6 +216,7 @@ $(function () {
       `</div>`
     );
     $list.append($userMessage);
+    moveLoadingToEnd();
     if (text) {
       const contentEl = $userMessage.find('.chat-content').get(0);
       if (contentEl) {
@@ -205,6 +225,7 @@ $(function () {
     }
     scrollToBottom();
     $message.val('');
+    setLoading(true);
 
     const formData = new FormData();
     formData.append('task_id', taskId);
@@ -213,14 +234,20 @@ $(function () {
       formData.append('file', file);
     }
 
-    const res = await fetch('chat_message.php', {
-      method: 'POST',
-      body: formData,
-    });
+    let data = null;
+    try {
+      const res = await fetch('chat_message.php', {
+        method: 'POST',
+        body: formData,
+      });
 
-    const data = await res.json();
-    if (!res.ok || !data.ok) {
-      alert(data.error || 'Fehler beim Senden.');
+      data = await res.json();
+      if (!res.ok || !data.ok) {
+        throw new Error(data && data.error ? data.error : 'Fehler beim Senden.');
+      }
+    } catch (err) {
+      alert(err && err.message ? err.message : 'Fehler beim Senden.');
+      setLoading(false);
       return;
     }
 
@@ -246,6 +273,7 @@ $(function () {
     $fileSelected.text('');
     $filePreview.empty();
     updateSendState();
+    setLoading(false);
   });
 
   $message.on('keydown', function (e) {

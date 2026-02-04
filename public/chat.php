@@ -80,6 +80,9 @@ $messages = chat_messages_for_task($userId, $taskId);
             </div>
           </div>
         <?php endforeach; ?>
+        <div id="chat-loading" class="chat-loading" aria-live="polite" aria-hidden="true">
+          <img src="assets/images/icons/loading.gif" alt="Laden...">
+        </div>
       </div>
     </div>
 

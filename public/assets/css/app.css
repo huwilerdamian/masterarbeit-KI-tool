@@ -31,6 +31,17 @@ body.page-chat #chat-list {
   overflow-y: auto;
 }
 
+.chat-loading {
+  display: none;
+  justify-content: center;
+  padding: 8px 0 0;
+}
+
+.chat-loading img {
+  width: 40px;
+  height: calc(40px / 200 * 107);
+}
+
 a {
   color: var(--bs-body-color);
 }
