@@ -96,10 +96,13 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
 .tasks-view-btn:hover {
   color: #fff;
+  background: #9e9e9e;
+  transform: translateY(-1px);
 }
 
 .icon-robot path:nth-child(1) {
