@@ -12,6 +12,22 @@ if ($userId < 1) {
 }
 
 $tasksByGroup = tasks_by_group($userId);
+
+$progressTotal = 0;
+$progressDone = 0;
+foreach ($tasksByGroup as $groupTasks) {
+    foreach ($groupTasks as $task) {
+        $type = (int)($task['type'] ?? 0);
+        if ($type !== 1 && $type !== 2) {
+            continue;
+        }
+        $progressTotal++;
+        if (!empty($task['corrected'])) {
+            $progressDone++;
+        }
+    }
+}
+$progressPercent = $progressTotal > 0 ? (int)round(($progressDone / $progressTotal) * 100) : 0;
 ?>
 <!doctype html>
 <html lang="de">
@@ -26,7 +42,28 @@ $tasksByGroup = tasks_by_group($userId);
 </head>
 <body class="page-tasks p-4">
   <div class="container bg-white rounded p-4 shadow">
-    <h1 class="border-bottom mb-5 mt-4">Matheplan «7a Gleichungen und Ungleichungen»</h1>
+    <div class="tasks-header border-bottom mb-4 mt-4 pb-4 d-flex align-items-center justify-content-between gap-4">
+      <div>
+        <h1 class="tasks-title">Matheplan 7a</h1>
+        <div class="tasks-subtitle">Gleichungen &amp; Ungleichungen</div>
+      </div>
+      <div class="tasks-progress-circle" style="--progress: <?= $progressPercent ?>;">
+        <div class="tasks-progress-inner">
+          <div>Du hast <strong id="tasks-progress-done"><?= (int)$progressDone ?></strong></div>
+          <div>von <span id="tasks-progress-total"><?= (int)$progressTotal ?></span> Pflichtaufgaben</div>
+          <div>erledigt (<span id="tasks-progress-percent"><?= (int)$progressPercent ?></span>%)</div>
+        </div>
+      </div>
+    </div>
+
+    <?php if (!empty($tasksByGroup)): ?>
+      <div class="tasks-filters d-flex gap-2 mb-4">
+        <button type="button" class="tasks-filter-btn is-active" data-group="all">Alle</button>
+        <?php foreach (array_keys($tasksByGroup) as $group): ?>
+          <button type="button" class="tasks-filter-btn" data-group="<?= htmlspecialchars((string)$group) ?>">Teil <?= htmlspecialchars((string)$group) ?></button>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
 
     <div class="container tasks mb-5">
       <div class="row bg-blue col-12 col-md-4 ps-4 pe-4 border">
@@ -47,7 +84,7 @@ $tasksByGroup = tasks_by_group($userId);
       <p>Keine Tasks gefunden.</p>
     <?php else: ?>
       <?php foreach ($tasksByGroup as $group => $groupTasks): ?>
-        <div class="container border tasks mb-5">
+        <div class="container border tasks mb-5" data-group="<?= htmlspecialchars((string)$group) ?>">
           <div class="row bg-orange fw-bold">
               <div class="d-flex align-items-center col-md-9 border-end ps-4 pe-4">Teil <?= htmlspecialchars($group) ?></div>
               <div class="d-flex align-items-center col-md-1 border-end justify-content-center">Gelöst?</div>
@@ -79,7 +116,7 @@ $tasksByGroup = tasks_by_group($userId);
                   }
               }
             ?>
-            <div class="row <?= htmlspecialchars(trim($typeClass . ' ' . $bgClass)) ?>">
+            <div class="row <?= htmlspecialchars(trim($typeClass . ' ' . $bgClass)) ?>" data-task-type="<?= (int)$type ?>" data-task-corrected="<?= !empty($task['corrected']) ? '1' : '0' ?>" data-task-state="<?= !empty($task['state']) ? '1' : '0' ?>">
               <div class="d-flex align-items-center col-md-9 border-end border-top p-2 ps-4 pe-4 gap-2">
                 <span><?= htmlspecialchars($task['title']) ?></span>
                 <?php if ($exerciseFilePath !== ''): ?>

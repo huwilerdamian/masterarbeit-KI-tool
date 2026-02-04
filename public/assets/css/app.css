@@ -3,6 +3,7 @@ body {
   background-image: url("../images/bg-image.jpg");
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
   min-height: 100vh;
 }
 
@@ -13,6 +14,73 @@ a {
 .icon {
   width: 40px;
   height: 40px;
+}
+
+.tasks-header .tasks-title {
+  font-size: 60px;
+  color: #1f2937;
+  margin-bottom: 0;
+}
+
+.tasks-header .tasks-subtitle {
+  font-size: 40px;
+  color: #374151;
+}
+
+.tasks-progress-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 999px;
+  background: conic-gradient(#10b981 calc(var(--progress) * 1%), #e5e7eb 0);
+  display: grid;
+  place-items: center;
+  padding: 10px;
+}
+
+.tasks-progress-inner {
+  width: 170px;
+  height: 170px;
+  border-radius: 999px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.82rem;
+  line-height: 1.15;
+  color: #374151;
+  padding: 8px 10px;
+  gap: 2px;
+}
+
+.tasks-progress-inner strong {
+  line-height: 1;
+}
+
+.tasks-filters .tasks-filter-btn {
+  border: 1px solid #dbe1f0;
+  border-bottom: 3px solid #dbe1f0;
+  background: #fff;
+  color: #1f2937;
+  padding: 8px 18px;
+  border-radius: 2px;
+  font-weight: 600;
+  box-shadow: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.tasks-filters .tasks-filter-btn.is-active {
+  background: #1e4f9a;
+  color: #fff;
+  border-color: #1e4f9a;
+  border-bottom-color: #1e4f9a;
+}
+
+.tasks-filters .tasks-filter-btn:not(.is-active):hover {
+  color: #1e4f9a;
+  border-color: #1e4f9a;
+  border-bottom-color: #1e4f9a;
 }
 
 .icon-robot path:nth-child(1) {
