@@ -40,8 +40,15 @@ function ai_chat_reply(string $message, array $history = [], ?string $imageDataU
         'model' => $model,
         'input' => $input,
     ];
-    if (is_string($instructions) && trim($instructions) !== '') {
-        $payloadData['instructions'] = trim($instructions);
+    $systemPrompt = getenv('SYSTEM_PROMPT');
+    $systemPrompt = is_string($systemPrompt) ? trim($systemPrompt) : '';
+    $extraInstructions = is_string($instructions) ? trim($instructions) : '';
+    if ($systemPrompt !== '' || $extraInstructions !== '') {
+        $combined = $systemPrompt;
+        if ($extraInstructions !== '') {
+            $combined = $combined !== '' ? ($combined . "\n\n" . $extraInstructions) : $extraInstructions;
+        }
+        $payloadData['instructions'] = $combined;
     }
 
     $vectorStoreId = $config['ai']['vector_store_id'] ?? '';
