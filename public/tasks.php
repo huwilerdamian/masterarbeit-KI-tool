@@ -123,8 +123,8 @@ $progressPercent = $progressTotal > 0 ? (int)round(($progressDone / $progressTot
               <div class="d-flex align-items-center col-md-9 border-end border-top p-2 ps-4 pe-4 gap-2">
                 <span><?= htmlspecialchars($task['title']) ?></span>
                 <?php if ($exerciseFilePath !== ''): ?>
-                  <a class="text-decoration-none" href="<?= htmlspecialchars($exerciseFilePath) ?>" data-featherlightopen="<?= htmlspecialchars($exerciseFilePath) ?>" <?= $exerciseIsImage ? 'data-featherlight="image"' : 'data-featherlight="iframe"' ?> <?= $exerciseIsImage ? '' : 'data-featherlight-iframe-width="100%" data-featherlight-iframe-height="80vh"' ?> aria-label="Aufgabendokument anzeigen">
-                    <?php include 'assets/images/icons/eye.svg' ?>
+                  <a class="tasks-view-btn ms-auto" href="<?= htmlspecialchars($exerciseFilePath) ?>" data-featherlightopen="<?= htmlspecialchars($exerciseFilePath) ?>" <?= $exerciseIsImage ? 'data-featherlight="image"' : 'data-featherlight="iframe"' ?> <?= $exerciseIsImage ? '' : 'data-featherlight-iframe-width="100%" data-featherlight-iframe-height="80vh"' ?> aria-label="Aufgabendokument anzeigen">
+                    <?php include 'assets/images/icons/eye.svg' ?> Aufgabe ansehen
                   </a>
                 <?php endif; ?>
               </div>
