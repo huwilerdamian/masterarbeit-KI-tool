@@ -131,8 +131,8 @@ try {
         $fileName = $originalName;
     }
 
-    save_chat_message($userId, $taskId, 'user', $message, $filePath, $fileName);
     $history = chat_messages_for_task($userId, $taskId);
+    save_chat_message($userId, $taskId, 'user', $message, $filePath, $fileName);
     $promptNotes = is_string($task['prompt_notes'] ?? null) ? trim((string)$task['prompt_notes']) : '';
     $reply = ai_chat_reply($message, $history, $imageDataUri ?? null, $taskId, $promptNotes);
     if ($reply !== '') {
