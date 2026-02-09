@@ -40,6 +40,13 @@ function ai_chat_reply(string $message, array $history = [], ?string $imageDataU
         'model' => $model,
         'input' => $input,
     ];
+    $temperature = $config['ai']['temperature'] ?? null;
+    if (is_numeric($temperature)) {
+        $temperatureValue = (float)$temperature;
+        if ($temperatureValue >= 0 && $temperatureValue <= 2) {
+            $payloadData['temperature'] = $temperatureValue;
+        }
+    }
     $systemPrompt = getenv('SYSTEM_PROMPT');
     $systemPrompt = is_string($systemPrompt) ? trim($systemPrompt) : '';
     $extraInstructions = is_string($instructions) ? trim($instructions) : '';
