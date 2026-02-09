@@ -43,6 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="col-12 col-md-6 col-lg-4">
         <h1 class="border-bottom mb-4 mt-2">Login</h1>
 
+        <?php if (isset($_GET['registered'])): ?>
+          <div class="alert alert-success" role="alert">Registrierung erfolgreich. Bitte jetzt anmelden.</div>
+        <?php endif; ?>
         <?php if ($error): ?>
           <div class="alert alert-danger" role="alert"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
@@ -58,6 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
           <button class="btn-login w-100" type="submit">Anmelden</button>
         </form>
+        <div class="mt-3 text-center">
+          <a href="register.php">Registrieren</a>
+        </div>
       </div>
     </div>
   </div>
