@@ -31,6 +31,16 @@ body.page-chat #chat-list {
   overflow-y: auto;
 }
 
+@supports (height: 100dvh) {
+  body.page-chat {
+    height: 100dvh;
+  }
+
+  body.page-chat .container {
+    height: calc(100dvh - 3rem);
+  }
+}
+
 .chat-loading {
   display: none;
   justify-content: center;
@@ -395,4 +405,64 @@ a {
 .btn-login:focus-visible {
   outline: 3px solid rgba(17, 24, 39, 0.25);
   outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+
+  .tasks-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .tasks-header .tasks-title {
+    font-size: 36px;
+  }
+
+  .tasks-header .tasks-subtitle {
+    font-size: 22px;
+  }
+
+  .tasks-progress-circle {
+    width: 140px;
+    height: 140px;
+  }
+
+  .tasks-progress-inner {
+    width: 120px;
+    height: 120px;
+    font-size: 0.78rem;
+  }
+
+  .tasks-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .tasks-filters .d-flex {
+    flex-wrap: wrap;
+  }
+
+  .tasks-filters .tasks-filter-btn {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+
+  .tasks-view-btn {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .tasks-progress-circle {
+    width: 120px;
+    height: 120px;
+  }
+
+  .tasks-progress-inner {
+    width: 100px;
+    height: 100px;
+    font-size: 0.75rem;
+  }
 }
