@@ -64,7 +64,10 @@ $progressPercent = $progressTotal > 0 ? (int)round(($progressDone / $progressTot
             <button type="button" class="tasks-filter-btn" data-group="<?= htmlspecialchars((string)$group) ?>">Teil <?= htmlspecialchars((string)$group) ?></button>
           <?php endforeach; ?>
         </div>
-        <button type="button" class="tasks-filter-btn tasks-legend-toggle" aria-expanded="false">Legende</button>
+        <div class="d-flex gap-2">
+          <button type="button" class="tasks-filter-btn tasks-legend-toggle" aria-expanded="false">Legende</button>
+          <a class="tasks-filter-btn" href="logout.php">Logout</a>
+        </div>
       </div>
     <?php endif; ?>
 
