@@ -33,7 +33,7 @@ $progressPercent = $progressTotal > 0 ? (int)round(($progressDone / $progressTot
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <title>Tasks</title>
+  <title>Matheplan</title>
   <link rel="stylesheet" href="assets/libs/bootstrap-5.3.8-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/app.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/featherlight@1.7.14/release/featherlight.min.css">

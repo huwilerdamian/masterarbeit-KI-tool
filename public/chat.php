@@ -37,7 +37,7 @@ $messages = chat_messages_for_task($userId, $taskId);
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <title>Task</title>
+  <title>Hilfe?</title>
   <link rel="stylesheet" href="assets/libs/bootstrap-5.3.8-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/app.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
