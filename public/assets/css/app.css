@@ -454,6 +454,65 @@ a {
   }
 }
 
+@media (max-width: 992px) {
+  .tasks.container > .row.bg-orange {
+    flex-wrap: wrap;
+  }
+
+  .tasks.container > .row.bg-orange > .col-md-9 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    border-right: 0;
+  }
+
+  .tasks.container > .row.bg-orange > .col-md-1 {
+    display: none !important;
+  }
+
+  .tasks.container .row[data-task-type] {
+    flex-wrap: wrap;
+  }
+
+  .tasks.container .row[data-task-type] > .col-md-9 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    border-right: 0;
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+  }
+
+  .tasks.container .row[data-task-type] > .col-md-1 {
+    flex: 0 0 33.333%;
+    max-width: 33.333%;
+    position: relative;
+    padding-top: 26px;
+  }
+
+  .tasks.container .row[data-task-type] > .col-md-1::before {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6b7280;
+    content: "";
+  }
+
+  .tasks.container .row[data-task-type] > .col-md-1:nth-child(2)::before {
+    content: "Gelöst";
+  }
+
+  .tasks.container .row[data-task-type] > .col-md-1:nth-child(3)::before {
+    content: "Korrigiert";
+  }
+
+  .tasks.container .row[data-task-type] > .col-md-1:nth-child(4)::before {
+    content: "Hilfe";
+  }
+}
+
 @media (max-width: 576px) {
   .tasks-progress-circle {
     width: 120px;
