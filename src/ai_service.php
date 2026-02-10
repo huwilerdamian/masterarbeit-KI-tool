@@ -10,6 +10,9 @@
  * um die Logik klar zu kapseln und wiederverwendbar zu halten.
  */
 
+/**
+ * Baut einen KI-Request aus Message/History und liefert die Text-Antwort.
+ */
 function ai_chat_reply(string $message, array $history = [], ?string $imageDataUri = null, ?int $taskId = null, ?string $instructions = null): string
 {
     global $config;
@@ -105,6 +108,9 @@ function ai_chat_reply(string $message, array $history = [], ?string $imageDataU
     return extract_openai_text($data);
 }
 
+/**
+ * Führt einen generischen OpenAI API-Request aus und gibt das JSON als Array zurück.
+ */
 function openai_api_request(string $method, string $url, array $headers = [], $body = null): array
 {
     global $config;
@@ -146,6 +152,9 @@ function openai_api_request(string $method, string $url, array $headers = [], $b
     return $data;
 }
 
+/**
+ * Lädt eine lokale Datei zur OpenAI Files API hoch und gibt die File-ID zurück.
+ */
 function openai_upload_file(string $absolutePath): string
 {
     if (!is_file($absolutePath)) {
@@ -165,6 +174,9 @@ function openai_upload_file(string $absolutePath): string
     return (string)($data['id'] ?? '');
 }
 
+/**
+ * Hängt eine File-ID an den konfigurierten Vector Store und gibt die VS-File-ID zurück.
+ */
 function openai_attach_file_to_vector_store(string $fileId, array $attributes = []): string
 {
     global $config;
@@ -191,6 +203,9 @@ function openai_attach_file_to_vector_store(string $fileId, array $attributes = 
     return (string)($data['id'] ?? '');
 }
 
+/**
+ * Extrahiert den Antwort-Text aus unterschiedlichen OpenAI Response-Formaten.
+ */
 function extract_openai_text(array $data): string
 {
     if (isset($data['output_text']) && is_string($data['output_text'])) {
