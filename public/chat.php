@@ -49,7 +49,7 @@ $messages = chat_messages_for_task($userId, $taskId);
 </head>
 <body class="page-chat p-4">
   <div class="container bg-white rounded p-4 shadow">
-    <div class="chat-header d-flex align-items-center justify-content-between border-bottom mt-4">
+    <div class="chat-header d-flex align-items-center justify-content-between border-bottom mt-4 mb-3">
       <h1 class="mb-0">Hilfe bei <?= htmlspecialchars($task['title']) ?></h1>
       <a class="chat-back-btn" href="tasks.php">Zurück</a>
     </div>
