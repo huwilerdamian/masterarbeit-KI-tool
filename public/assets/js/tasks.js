@@ -129,4 +129,34 @@ $(function () {
       updateProgressCircle();
     }
   });
+
+  $(document).on('click', 'a[show-solution]', async function () {
+    const $link = $(this);
+    const taskProgressId = Number($link.attr('show-solution'));
+
+    if (!taskProgressId) {
+      return;
+    }
+
+    try {
+      const res = await fetch('update_solution_view_count.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ task_progress_id: taskProgressId }),
+      });
+
+      if (!res.ok) {
+        return;
+      }
+
+      const data = await res.json();
+      if (!data.ok) {
+        return;
+      }
+
+      $link.find('.solution-view-count').text(Number(data.solution_view_count) || 0);
+    } catch (error) {
+      console.error('Fehler beim Aktualisieren des Lösungszählers.', error);
+    }
+  });
 });

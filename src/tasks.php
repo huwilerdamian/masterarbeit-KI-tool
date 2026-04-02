@@ -16,7 +16,7 @@
 function tasks(int $userId): array
 {
     return db_query(
-        'SELECT t.id, t.title, t.prompt_notes, t.position, t.`task_group`, t.type, tp.task_id, tp.state, tp.corrected, tp.solution_view_count
+        'SELECT t.id, t.title, t.prompt_notes, t.position, t.`task_group`, t.type, tp.id AS task_progress_id, tp.task_id, tp.state, tp.corrected, tp.solution_view_count
          FROM task_progress tp
          INNER JOIN tasks t ON t.id = tp.task_id
          WHERE tp.user_id = :uid
@@ -116,4 +116,33 @@ function update_task_state(int $taskId, int $userId, bool $state): void
             'user_id' => $userId,
         ]
     );
+}
+
+/**
+ * Erhöht die Anzahl der Lösungsaufrufe für einen task_progress-Eintrag.
+ */
+function increment_solution_view_count(int $taskProgressId, int $userId): int
+{
+    db_execute(
+        'UPDATE task_progress
+         SET solution_view_count = COALESCE(solution_view_count, 0) + 1
+         WHERE id = :id AND user_id = :user_id',
+        [
+            'id' => $taskProgressId,
+            'user_id' => $userId,
+        ]
+    );
+
+    $rows = db_query(
+        'SELECT solution_view_count
+         FROM task_progress
+         WHERE id = :id AND user_id = :user_id
+         LIMIT 1',
+        [
+            'id' => $taskProgressId,
+            'user_id' => $userId,
+        ]
+    );
+
+    return isset($rows[0]['solution_view_count']) ? (int)$rows[0]['solution_view_count'] : 0;
 }
