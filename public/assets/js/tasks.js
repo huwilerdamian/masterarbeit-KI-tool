@@ -1,4 +1,17 @@
 $(function () {
+  function maybeShowCompletedMessage($row) {
+    if (!$row.length) {
+      return;
+    }
+
+    const isCorrected = Number($row.data('task-corrected')) === 1;
+    const isSolved = Number($row.data('task-state')) === 1;
+
+    if (isCorrected && isSolved) {
+      $.featherlight('<div class="tasks-success-popup">Gut gemacht</div>');
+    }
+  }
+
   function updateProgressCircle() {
     let total = 0;
     let done = 0;
@@ -93,6 +106,7 @@ $(function () {
     if ($row.length) {
       $row.data('task-corrected', data.corrected ? 1 : 0);
       updateProgressCircle();
+      maybeShowCompletedMessage($row);
     }
   });
 
@@ -127,6 +141,7 @@ $(function () {
     if ($row.length) {
       $row.data('task-state', data.state);
       updateProgressCircle();
+      maybeShowCompletedMessage($row);
     }
   });
 
