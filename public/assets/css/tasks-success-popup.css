@@ -1,0 +1,30 @@
+.featherlight.tasks-success-lightbox .featherlight-content {
+  width: auto;
+  height: auto;
+  max-width: 420px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 18px;
+  overflow: visible;
+}
+
+.featherlight.tasks-success-lightbox {
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.featherlight.tasks-success-lightbox .featherlight-close-icon {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  z-index: 10000;
+}
+
+.tasks-success-popup {
+  min-width: 280px;
+  padding: 32px 40px;
+  background: #ffffff;
+  color: #1f2937;
+  text-align: center;
+  position: relative;
+  z-index: 9999;
+}

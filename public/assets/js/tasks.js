@@ -8,7 +8,12 @@ $(function () {
     const isSolved = Number($row.data('task-state')) === 1;
 
     if (isCorrected && isSolved) {
-      $.featherlight('<div class="tasks-success-popup">Gut gemacht</div>');
+      $.featherlight('<div class="tasks-success-popup">Gut gemacht</div>', {
+        afterOpen() {
+          this.$instance.addClass('tasks-success-lightbox');
+          $(document).trigger('tasks:success-popup-opened', [this.$instance]);
+        },
+      });
     }
   }
 

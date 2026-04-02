@@ -36,6 +36,7 @@ $progressPercent = $progressTotal > 0 ? (int)round(($progressDone / $progressTot
   <title>Matheplan</title>
   <link rel="stylesheet" href="assets/libs/bootstrap-5.3.8-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="assets/css/tasks-success-popup.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/featherlight@1.7.14/release/featherlight.min.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/featherlight@1.7.14/release/featherlight.min.js"></script>
@@ -170,5 +171,6 @@ $progressPercent = $progressTotal > 0 ? (int)round(($progressDone / $progressTot
   </div>
   <script src="assets/libs/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/tasks.js"></script>
+  <script src="assets/js/tasks-success-confetti.js"></script>
 </body>
 </html>
