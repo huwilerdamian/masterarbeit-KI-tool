@@ -37,8 +37,22 @@ function chat_messages_for_task(int $userId, int $taskId, ?int $limit = null): a
     if ($maxHistory === null) {
         $maxHistory = (int)($config['ai']['max_history'] ?? 20);
     }
-    if ($maxHistory < 1) {
-        return [];
+
+    if ($maxHistory !== null && $maxHistory < 1) {
+        $maxHistory = null;
+    }
+
+    if ($maxHistory === null) {
+        return db_query(
+            'SELECT role, content, file_path, file_name
+             FROM chat_messages
+             WHERE user_id = :user_id AND task_id = :task_id
+             ORDER BY id ASC',
+            [
+                'user_id' => $userId,
+                'task_id' => $taskId,
+            ]
+        );
     }
 
     return db_query(

@@ -1,19 +1,51 @@
 $(function () {
-  function maybeShowCompletedMessage($row) {
+  async function loadTaskFeedback(taskId) {
+    const res = await fetch('generate_task_feedback.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ task_id: taskId }),
+    });
+
+    if (!res.ok) {
+      throw new Error('Feedback konnte nicht geladen werden.');
+    }
+
+    const data = await res.json();
+    
+    if (!data.ok) {
+      throw new Error(data.error || 'Feedback konnte nicht geladen werden.');
+    }
+
+    return String(data.feedback || '').trim();
+  }
+
+  async function maybeShowCompletedMessage($row) {
     if (!$row.length) {
       return;
     }
 
     const isCorrected = Number($row.data('task-corrected')) === 1;
     const isSolved = Number($row.data('task-state')) === 1;
+    const taskId = Number($row.data('task-id'));
 
-    if (isCorrected && isSolved) {
-      $.featherlight('<div class="tasks-success-popup">Gut gemacht</div>', {
-        afterOpen() {
-          this.$instance.addClass('tasks-success-lightbox');
-          $(document).trigger('tasks:success-popup-opened', [this.$instance]);
-        },
-      });
+    if (!isCorrected || !isSolved || !taskId) {
+      return;
+    }
+
+    const $content = $('<div class="tasks-success-popup"><div class="tasks-success-popup-text">Rückmeldung wird erstellt...</div></div>');
+    const lightbox = $.featherlight($content, {
+      afterOpen() {
+        this.$instance.addClass('tasks-success-lightbox');
+        $(document).trigger('tasks:success-popup-opened', [this.$instance]);
+      },
+    });
+
+    try {
+      const feedback = await loadTaskFeedback(taskId);
+      const text = feedback !== '' ? feedback : 'Du hast die Aufgabe abgeschlossen und bist drangeblieben.';
+      lightbox.$content.find('.tasks-success-popup-text').text(text);
+    } catch (_error) {
+      lightbox.$content.find('.tasks-success-popup-text').text('Du hast die Aufgabe abgeschlossen und bist drangeblieben.');
     }
   }
 
@@ -111,7 +143,7 @@ $(function () {
     if ($row.length) {
       $row.data('task-corrected', data.corrected ? 1 : 0);
       updateProgressCircle();
-      maybeShowCompletedMessage($row);
+      await maybeShowCompletedMessage($row);
     }
   });
 
@@ -146,7 +178,7 @@ $(function () {
     if ($row.length) {
       $row.data('task-state', data.state);
       updateProgressCircle();
-      maybeShowCompletedMessage($row);
+      await maybeShowCompletedMessage($row);
     }
   });
 

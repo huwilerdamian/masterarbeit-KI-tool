@@ -133,7 +133,7 @@ $progressPercent = $progressTotal > 0 ? (int)round(($progressDone / $progressTot
                   }
               }
             ?>
-            <div class="row <?= htmlspecialchars(trim($typeClass . ' ' . $bgClass)) ?>" data-task-type="<?= (int)$type ?>" data-task-corrected="<?= !empty($task['corrected']) ? '1' : '0' ?>" data-task-state="<?= !empty($task['state']) ? '1' : '0' ?>">
+            <div class="row <?= htmlspecialchars(trim($typeClass . ' ' . $bgClass)) ?>" data-task-id="<?= (int)$task['id'] ?>" data-task-type="<?= (int)$type ?>" data-task-corrected="<?= !empty($task['corrected']) ? '1' : '0' ?>" data-task-state="<?= !empty($task['state']) ? '1' : '0' ?>">
               <div class="d-flex align-items-center col-md-9 border-end border-top p-2 ps-4 pe-4 gap-2">
                 <span><?= htmlspecialchars($task['title']) ?></span>
                 <?php if ($exerciseFilePath !== '' || $solutionFilePath !== ''): ?>

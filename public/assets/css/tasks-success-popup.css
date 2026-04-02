@@ -21,6 +21,7 @@
 
 .tasks-success-popup {
   min-width: 280px;
+  max-width: 420px;
   padding: 32px 40px;
   background: #ffffff;
   color: #1f2937;

@@ -255,3 +255,74 @@ function normalize_history_messages(array $history): array
     }
     return $messages;
 }
+
+/**
+ * Erstellt auf Basis des vollständigen Chatverlaufs eine kurze motivierende Rückmeldung.
+ */
+function ai_task_completion_feedback(array $history, string $taskTitle = ''): string
+{
+    global $config;
+
+    $apiKey = $config['ai']['api_key'] ?? '';
+    if ($apiKey === '') {
+        throw new RuntimeException('OPENAI_API_KEY fehlt.');
+    }
+
+    $model = $config['ai']['model'] ?? 'gpt-4.1-mini';
+    $temperature = $config['ai']['temperature'] ?? null;
+
+    $transcriptLines = [];
+    foreach ($history as $message) {
+        if (!is_array($message)) {
+            continue;
+        }
+
+        $role = (string)($message['role'] ?? '');
+        $content = trim((string)($message['content'] ?? ''));
+        $fileName = trim((string)($message['file_name'] ?? ''));
+
+        if ($role === '' && $content === '' && $fileName === '') {
+            continue;
+        }
+
+        $label = $role === 'assistant' ? 'Tutor' : 'Lernende Person';
+        $line = $label . ': ' . ($content !== '' ? $content : '[ohne Text]');
+        if ($fileName !== '') {
+            $line .= ' (Anhang: ' . $fileName . ')';
+        }
+        $transcriptLines[] = $line;
+    }
+
+    $transcript = !empty($transcriptLines)
+        ? 'Chatverlauf:\n' . implode("\n", $transcriptLines) . '\n\n'
+        : 'Es liegt noch kein Chatverlauf vor.';
+
+    $taskContext = trim($taskTitle) !== '' ? 'Task: ' . trim($taskTitle) . "\n\n" : '';
+
+    $payloadData = [
+        'model' => $model,
+        'input' => $taskContext .
+            $transcript .
+            "Verfasse auf Deutsch eine kurze, persönliche und motivierende Rückmeldung für den Moment, in dem die lernende Person die Aufgabe abgeschlossen hat. " .
+            "Beziehe dich wenn möglich auf den Chatverlauf und den darauszulesenden Lernfortschritt. " .
+            "Wenn kein Chatverlauf vorhanden ist, dann gib eine allgemein Rückmeldung wie 'Nice! Wieder eine Aufgabe geschafft.', 'Gut gemacht! Du kommst Schritt für Schritt voran.' oder 'Stark! Du hast die Aufgabe erfolgreich gelöst.'" .
+            "Maximal 2 kurze Sätze, kein Titel, keine Aufzählung, keine Anführungszeichen.",
+        'instructions' => 'Du formulierst wertschätzende, konkrete Lernrückmeldungen für Schülerinnen und Schüler.',
+    ];
+
+    if (is_numeric($temperature)) {
+        $temperatureValue = (float)$temperature;
+        if ($temperatureValue >= 0 && $temperatureValue <= 2) {
+            $payloadData['temperature'] = $temperatureValue;
+        }
+    }
+
+    $data = openai_api_request(
+        'POST',
+        'https://api.openai.com/v1/responses',
+        ['Content-Type: application/json'],
+        json_encode($payloadData)
+    );
+
+    return trim(extract_openai_text($data));
+}
