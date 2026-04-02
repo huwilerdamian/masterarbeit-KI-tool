@@ -156,6 +156,7 @@ a {
   border-radius: 2px;
   display: inline-flex;
   align-items: center;
+  min-height: 32px;
   gap: 6px;
   transition: background 0.15s ease, transform 0.15s ease;
 }
@@ -164,6 +165,21 @@ a {
   color: #fff;
   background: #9e9e9e;
   transform: translateY(-1px);
+}
+
+.solution-view-count {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #fff;
+  color: #bcbcbc;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1;
+  flex: 0 0 28px;
 }
 
 .icon-robot path:nth-child(1) {

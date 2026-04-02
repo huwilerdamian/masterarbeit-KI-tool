@@ -145,6 +145,7 @@ $progressPercent = $progressTotal > 0 ? (int)round(($progressDone / $progressTot
                     <?php if ($solutionFilePath !== ''): ?>
                       <a class="tasks-view-btn" href="<?= htmlspecialchars($solutionFilePath) ?>" data-featherlightopen="<?= htmlspecialchars($solutionFilePath) ?>" <?= $solutionIsImage ? 'data-featherlight="image"' : 'data-featherlight="iframe"' ?> <?= $solutionIsImage ? '' : 'data-featherlight-iframe-width="100%" data-featherlight-iframe-height="80vh"' ?> aria-label="Lösungsdokument anzeigen">
                         <?php include 'assets/images/icons/eye.svg' ?> Lösung ansehen
+                        <span class="solution-view-count"><?= (int)($task['solution_view_count'] ?? 0) ?></span>
                       </a>
                     <?php endif; ?>
                   </div>
