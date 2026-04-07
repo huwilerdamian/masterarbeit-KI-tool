@@ -2,6 +2,7 @@
 require __DIR__ . '/../init.php';
 require __DIR__ . '/../src/tasks.php';
 require __DIR__ . '/../src/chat.php';
+require __DIR__ . '/../src/task_files.php';
 require __DIR__ . '/../src/ai_service.php';
 
 header('Content-Type: application/json; charset=utf-8');
@@ -132,6 +133,36 @@ try {
     }
 
     $history = chat_messages_for_task($userId, $taskId);
+    if (empty($history)) {
+        $exerciseFile = task_file_for_task_by_type($taskId, 'exercise');
+        $solutionFile = task_file_for_task_by_type($taskId, 'solution');
+        $taskTitle = trim((string)($task['title'] ?? ''));
+        $exerciseFileName = trim((string)basename((string)($exerciseFile['file_path'] ?? '')));
+        $solutionFileName = trim((string)basename((string)($solutionFile['file_path'] ?? '')));
+
+        if ($taskTitle !== '' || $exerciseFileName !== '' || $solutionFileName !== '') {
+            $hiddenPrompt = 'Im folgenden Chatverlauf wird auf ';
+            if ($taskTitle !== '' && $exerciseFileName !== '') {
+                $hiddenPrompt .= 'die Aufgabe "' . $exerciseFileName . '" mit dem Titel "' . $taskTitle . '"';
+            } elseif ($taskTitle !== '') {
+                $hiddenPrompt .= 'die Aufgabe mit dem Titel "' . $taskTitle . '"';
+            } elseif ($exerciseFileName !== '') {
+                $hiddenPrompt .= 'die Aufgabe "' . $exerciseFileName . '"';
+            } else {
+                $hiddenPrompt .= 'die Aufgabe';
+            }
+
+            if ($solutionFileName !== '') {
+                $hiddenPrompt .= ' mit der Loesung "' . $solutionFileName . '"';
+            }
+
+            $hiddenPrompt .= ' bezogen.';
+            $history[] = [
+                'role' => 'user',
+                'content' => $hiddenPrompt,
+            ];
+        }
+    }
     save_chat_message($userId, $taskId, 'user', $message, $filePath, $fileName);
     $promptNotes = is_string($task['prompt_notes'] ?? null) ? trim((string)$task['prompt_notes']) : '';
     $reply = ai_chat_reply($message, $history, $imageDataUri ?? null, $taskId, $promptNotes);
