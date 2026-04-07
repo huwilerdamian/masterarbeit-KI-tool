@@ -167,6 +167,10 @@ a {
   transform: translateY(-1px);
 }
 
+.tasks-view-btn svg {
+  flex: 0 0 auto;
+}
+
 .solution-view-count {
   width: 28px;
   height: 28px;
@@ -471,6 +475,11 @@ a {
 }
 
 @media (max-width: 992px) {
+  .container,
+  .container-sm {
+    max-width: none;
+  }
+
   .tasks.container > .row.bg-orange {
     flex-wrap: wrap;
   }
@@ -487,6 +496,11 @@ a {
 
   .tasks.container .row[data-task-type] {
     flex-wrap: wrap;
+    border: 1px solid #bcbcbc;
+  }
+
+  .tasks.container .row[data-task-type]:not(:last-child) {
+      border-bottom: none;
   }
 
   .tasks.container .row[data-task-type] > .col-md-9 {
@@ -526,6 +540,10 @@ a {
 
   .tasks.container .row[data-task-type] > .col-md-1:nth-child(4)::before {
     content: "Hilfe";
+  }
+
+  .tasks-view-btn {
+    width: 140px;
   }
 }
 
