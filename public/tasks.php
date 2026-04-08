@@ -33,6 +33,7 @@ $progressPercent = $progressTotal > 0 ? (int)round(($progressDone / $progressTot
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Matheplan</title>
   <link rel="stylesheet" href="assets/libs/bootstrap-5.3.8-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/app.css">
