@@ -556,6 +556,9 @@ a {
   body > .rounded {
     border-radius: 0 !important;
   }
+  body.page-chat .container {
+    height: 100dvh;
+  }
 
   .tasks-progress-circle {
     width: 120px;
