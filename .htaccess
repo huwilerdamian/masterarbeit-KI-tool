@@ -3,3 +3,4 @@ RewriteEngine On
 # Weiterleitung auf HTTPS erzwingen
 RewriteCond %{HTTPS} !=on
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+AddHandler application/x-httpd-php83 .php
