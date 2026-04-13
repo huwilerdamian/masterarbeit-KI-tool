@@ -303,10 +303,7 @@ function ai_task_completion_feedback(array $history, string $taskTitle = ''): st
         'model' => $model,
         'input' => $taskContext .
             $transcript .
-            "Verfasse auf Deutsch eine kurze, persönliche und motivierende Rückmeldung für den Moment, in dem die lernende Person die Aufgabe abgeschlossen hat. " .
-            "Beziehe dich wenn möglich auf den Chatverlauf und den darauszulesenden Lernfortschritt. " .
-            "Wenn kein Chatverlauf vorhanden ist, dann gib eine allgemein Rückmeldung wie 'Nice! Wieder eine Aufgabe geschafft.', 'Gut gemacht! Du kommst Schritt für Schritt voran.' oder 'Stark! Du hast die Aufgabe erfolgreich gelöst.'" .
-            "Maximal 2 kurze Sätze, kein Titel, keine Aufzählung, keine Anführungszeichen.",
+            " Verfasse auf Deutsch eine kurze, persönliche und motivierende Rückmeldung für den Moment, in dem die lernende Person die Aufgabe abgeschlossen hat. Beziehe dich wenn möglich auf den Lernfortschritt. Wenn kein Kontext vorhanden ist, formuliere eine allgemeine, positive Rückmeldung. Verwende jedes Mal eine andere Formulierung. Maximal 2 kurze Sätze, kein Titel, keine Aufzählung, keine Anführungszeichen.",
         'instructions' => 'Du formulierst wertschätzende, konkrete Lernrückmeldungen für Schülerinnen und Schüler.',
     ];
 
